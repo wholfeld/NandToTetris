@@ -40,10 +40,31 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
-    ARegister(in=, load=, out=aRegOut);
-    DRegister(in=, load=, out=dRegOut);
-    Mux16(a=inM, b=aRegOut, sel=, out=mOrA);
-    Mux(a=, b=, sel=, out=);
-    ALU(x=, y=, zx=, nx=, zy=, ny=, f=, no=, out=, zr=, ng=);
-    PC(in=, load=, inc=, reset=reset, out=pc); 
+    ARegister(in=instructionOrOut, load=loadA, out=aRegOut, out[0..14]=addressM);
+    DRegister(in=ALUOut, load=loadD, out=dRegOut);
+    Mux16(a=instruction, b=ALUOut, sel=instruction[15], out=instructionOrOut);
+    Mux16(a=aRegOut, b=inM, sel=instruction[12], out=aOrM);
+    And(a=instruction[15], b=instruction[11], out=c1);
+    And(a=instruction[15], b=instruction[10], out=c2);
+    And(a=instruction[15], b=instruction[9], out=c3);
+    And(a=instruction[15], b=instruction[8], out=c4);
+    And(a=instruction[15], b=instruction[7], out=c5);
+    And(a=instruction[15], b=instruction[6], out=c6);
+    ALU(x=dRegOut, y=aOrM, zx=c1, nx=c2, zy=c3, ny=c4, f=c5, no=c6, out=outM, out=ALUOut, zr=zr, ng=ng);
+    And(a=instruction[15], b=instruction[0], out=j3Instruction);
+    And(a=instruction[15], b=instruction[1], out=j2Instruction);
+    And(a=instruction[15], b=instruction[2], out=j1Instruction);
+    Or(a=zr, b=ng, out=lte);
+    Not(in=lte, out=gt);
+    And(a=j1Instruction, b=ng, out=negJ);
+    And(a=j2Instruction, b=zr, out=zeroJ);
+    And(a=j3Instruction, b=gt, out=posJ);
+    Or(a=negJ, b=zeroJ, out=negOrZeroJump);    
+    Or(a=negOrZeroJump, b=posJ, out=jumpLoad);
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    And(a=instruction[15], b=instruction[5], out=aInstruction);
+    Not(in=instruction[15], out=isAddress);
+    Or(a=aInstruction, b=isAddress, out=loadA);
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    PC(in=aRegOut, load=jumpLoad, inc=true, reset=reset, out[0..14]=pc); 
 }

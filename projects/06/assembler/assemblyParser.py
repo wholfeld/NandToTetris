@@ -32,26 +32,44 @@ class parser:
     def advance(self):
         self.current_location += 1
 
-    def symbol(self):
-        pass
-
-    def dest(self):
-        pass
-
-    def comp(self):
-        pass
-
-    def jump(self):
-        pass
-
     def resetParser(self):
         self.current_location = 0
+
+def getCommandPart(command, command_type):
+    if command_type == symbolTable.CommandPart.COMP:
+        if command.__contains__('='):
+            return command.split('=')[1]
+        else:
+            return '0'
+    if command_type == symbolTable.CommandPart.DEST:
+        if command.__contains__('='):
+            return command.split('=')[0]
+        else:
+            return command.split(';')[0]
+    if command_type == symbolTable.CommandPart.JUMP:
+        if command.__contains__(';'):
+            return command.split(';')[1]
+        else:
+            return '0'
+
+def dest():
+    pass
+
+def comp():
+    pass
+
+def jump():
+    pass
+
+
+def symbol(instruction: str):
+    return re.split(regex_pattern, instruction)[1]
 
 
 def commandType(command_string: str):
     if command_string.__contains__('('):
-        return symbolTable.commands.L_COMMAND
+        return symbolTable.CommandType.L_COMMAND
     if command_string.__contains__('@'):
-        return symbolTable.commands.A_COMMAND
+        return symbolTable.CommandType.A_COMMAND
     if command_string.__contains__('='):
-        return symbolTable.commands.C_COMMAND
+        return symbolTable.CommandType.C_COMMAND

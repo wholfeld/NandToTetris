@@ -60,7 +60,13 @@ jump_dict = {
 }
 
 
-class commands(Enum):
+class CommandType(Enum):
     A_COMMAND = auto()
     C_COMMAND = auto()
     L_COMMAND = auto()
+
+
+class CommandPart(Enum):
+    DEST = auto()
+    COMP = auto()
+    JUMP = auto()

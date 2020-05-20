@@ -1,4 +1,3 @@
-
 import sys
 import assemblyParser
 from pathlib import Path

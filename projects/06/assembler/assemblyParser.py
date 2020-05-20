@@ -1,4 +1,5 @@
 import re
+import symbolTable
 
 delimiters = "@", "//", "=", ";", "(", ")", " ",
 regex_pattern = '|'.join(map(re.escape, delimiters))
@@ -15,15 +16,15 @@ class parser:
         with file.open() as f:
             for x in f:
                 # pass
-                no_whitespace_str = x.strip()
 
+                no_whitespace_str = x.strip()
                 for char in no_whitespace_str:
                     if char == "/":
                         break
                     if char == "@" or char == "=" or char == ";":
                         no_comments = no_whitespace_str.split('/')
                         self.commands.append(no_comments[0])
-        y = 1
+        print(self.commands)
 
     def hasMoreCommands(self) -> bool:
         return len(self.commands) < self.current_location
@@ -31,7 +32,12 @@ class parser:
     def advance(self):
         self.current_location += 1
 
-    def commandType(self):
+    def commandType(self, command_string: str):
+        if command_string.__contains__('('):
+            return symbolTable.commands.L_COMMAND
+        if command_string.__contains__('@'):
+            return symbolTable.commands.A_COMMAND
+        if command_string.__contains__('='):
         pass
 
     def symbol(self):

@@ -1,4 +1,4 @@
-
+from enum import Enum, auto
 
 instructions_dict = {
     '0': '101010',
@@ -58,3 +58,9 @@ jump_dict = {
     'JLE': '110',
     'JMP': '111',
 }
+
+
+class commands(Enum):
+    A_COMMAND = auto()
+    C_COMMAND = auto()
+    L_COMMAND = auto()

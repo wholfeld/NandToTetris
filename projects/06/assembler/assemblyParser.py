@@ -32,14 +32,6 @@ class parser:
     def advance(self):
         self.current_location += 1
 
-    def commandType(self, command_string: str):
-        if command_string.__contains__('('):
-            return symbolTable.commands.L_COMMAND
-        if command_string.__contains__('@'):
-            return symbolTable.commands.A_COMMAND
-        if command_string.__contains__('='):
-        pass
-
     def symbol(self):
         pass
 
@@ -54,3 +46,12 @@ class parser:
 
     def resetParser(self):
         self.current_location = 0
+
+
+def commandType(command_string: str):
+    if command_string.__contains__('('):
+        return symbolTable.commands.L_COMMAND
+    if command_string.__contains__('@'):
+        return symbolTable.commands.A_COMMAND
+    if command_string.__contains__('='):
+        return symbolTable.commands.C_COMMAND

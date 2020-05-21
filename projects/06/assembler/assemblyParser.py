@@ -35,10 +35,11 @@ class parser:
     def resetParser(self):
         self.current_location = 0
 
+
 def getCommandPart(command, command_type):
     if command_type == symbolTable.CommandPart.COMP:
         if command.__contains__('='):
-            return command.split('=')[1]
+            return command.split('=')[1].split(';')[0]
         else:
             return '0'
     if command_type == symbolTable.CommandPart.DEST:
@@ -50,16 +51,26 @@ def getCommandPart(command, command_type):
         if command.__contains__(';'):
             return command.split(';')[1]
         else:
-            return '0'
+            return ''
 
-def dest():
-    pass
 
-def comp():
-    pass
+def dest(dest):
+    destination = ['0', '0', '0']
+    if 'A' in dest:
+        destination[0] = '1'
+    if 'D' in dest:
+        destination[1] = '1'
+    if 'M' in dest:
+        destination[2] = '1'
+    return ''.join(destination)
 
-def jump():
-    pass
+
+def comp(comp):
+    return symbolTable.instructions_dict.get(comp)
+
+
+def jump(jump):
+    return symbolTable.jump_dict.get(jump)
 
 
 def symbol(instruction: str):

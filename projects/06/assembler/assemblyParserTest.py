@@ -6,9 +6,9 @@ import symbolTable
 class TestAssemblyParser(unittest.TestCase):
 
     def test_command(self):
-        self.assertEqual(assemblyParser.commandType('@5'), symbolTable.commands.A_COMMAND)
-        self.assertEqual(assemblyParser.commandType('(hi)'), symbolTable.commands.L_COMMAND)
-        self.assertEqual(assemblyParser.commandType('D=D+A;JGT'), symbolTable.commands.C_COMMAND)
+        self.assertEqual(assemblyParser.commandType('@5'), symbolTable.CommandType.A_COMMAND)
+        self.assertEqual(assemblyParser.commandType('(hi)'), symbolTable.CommandType.L_COMMAND)
+        self.assertEqual(assemblyParser.commandType('D=D+A;JGT'), symbolTable.CommandType.C_COMMAND)
 
     def test_symbol(self):
         self.assertEqual(assemblyParser.symbol('@2'), '2')
@@ -16,10 +16,30 @@ class TestAssemblyParser(unittest.TestCase):
         self.assertEqual(assemblyParser.symbol('@symbol'), 'symbol')
 
     def test_get_command(self):
-        self.assertEqual(assemblyParser.getCommandPart('D=A+1;JMP'), symbolTable.commands.A_COMMAND)
+        self.assertEqual(assemblyParser.getCommandPart('D=A+1;JMP', symbolTable.CommandPart.JUMP), 'JMP')
+        self.assertEqual(assemblyParser.getCommandPart('D=A+1;JMP', symbolTable.CommandPart.DEST), 'D')
+        self.assertEqual(assemblyParser.getCommandPart('D=A+1;JMP', symbolTable.CommandPart.COMP), 'A+1')
+        self.assertEqual(assemblyParser.getCommandPart('D=A+1', symbolTable.CommandPart.JUMP), '')
+        self.assertEqual(assemblyParser.getCommandPart('D;JMP', symbolTable.CommandPart.DEST), 'D')
+        self.assertEqual(assemblyParser.getCommandPart('0;JMP', symbolTable.CommandPart.DEST), '0')
+        self.assertEqual(assemblyParser.getCommandPart('D;JMP', symbolTable.CommandPart.COMP), '0')
 
-    # def test_dest(self):
-    #     self.assertEqual(assemblyParser.)
+    def test_dest(self):
+        self.assertEqual(assemblyParser.dest('0'), '000')
+        self.assertEqual(assemblyParser.dest('A'), '100')
+        self.assertEqual(assemblyParser.dest('D'), '010')
+        self.assertEqual(assemblyParser.dest('M'), '001')
+        self.assertEqual(assemblyParser.dest('ADM'), '111')
+
+    def test_comp(self):
+        self.assertEqual(assemblyParser.comp('0'), '101010')
+        self.assertEqual(assemblyParser.comp('-D'), '001111')
+        self.assertEqual(assemblyParser.comp('A+1'), '110111')
+
+    def test_jump(self):
+        self.assertEqual(assemblyParser.jump(''), '000')
+        self.assertEqual(assemblyParser.jump('JMP'), '111')
+        self.assertEqual(assemblyParser.jump('JEQ'), '010')
 
     # def test_address(self):
     #     self.assertEqual(Assembler.get_address('@2'), '0000000000000010')

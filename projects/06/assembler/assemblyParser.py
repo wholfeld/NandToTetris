@@ -12,25 +12,35 @@ class parser:
         self.file = file
         self.commands = []
         self.current_location = 0
+        self.current_line = 1
         self.current_command = ''
         with file.open() as f:
             for x in f:
-                # pass
 
                 no_whitespace_str = x.strip()
                 for char in no_whitespace_str:
                     if char == "/":
                         break
-                    if char == "@" or char == "=" or char == ";":
+                    if char == "@" or char == "=" or char == ";" or char == "(":
                         no_comments = no_whitespace_str.split('/')
                         self.commands.append(no_comments[0])
-        print(self.commands)
+        self.current_command = self.commands[0]
 
     def hasMoreCommands(self) -> bool:
-        return len(self.commands) < self.current_location
+        return self.current_location < len(self.commands)
 
     def advance(self):
         self.current_location += 1
+        if self.hasMoreCommands():
+            self.current_command = self.commands[self.current_location]
+            if commandType(self.current_command) != symbolTable.CommandType.L_COMMAND:
+                self.current_line += 1
+
+    def getCurrentCommand(self):
+        return self.current_command
+
+    def getCurrentLine(self):
+        return self.current_location
 
     def resetParser(self):
         self.current_location = 0

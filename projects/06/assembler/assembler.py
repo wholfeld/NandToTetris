@@ -1,10 +1,32 @@
 import sys
 import assemblyParser
+import symbolTable
 from pathlib import Path
 
 
+class assembler():
+    def __init__(self, parser):
+        self.userCreatedSymbols = {}
+
+    def runPassToStoreLoops(self, parser):
+        while parser.hasMoreCommands():
+            _cur_command = parser.getCurrentCommand()
+            if assemblyParser.commandType(_cur_command) == symbolTable.CommandType.L_COMMAND:
+                self.userCreatedSymbols[_cur_command[1:-1]] = parser.getCurrentLine()
+            parser.advance()
+    
+    def runSecondPass(self, parser):
+
+        while parser.hasMoreCommands():
+            _cur_command = parser.getCurrentCommand()
+
+            parser.advance()
+                
+
+
+
 def main():
-    file_location = format_filename("Add.asm")
+    file_location = format_filename("Rect.asm")
     # test = '../add/Add.asm' '../{folderName}/{fileName}
     if len(sys.argv) > 1:
         file_location = format_filename(sys.argv[1])
@@ -13,6 +35,12 @@ def main():
     # print(mod_path)
     src_path = (mod_path / file_location).resolve()
     parser = assemblyParser.parser(src_path)
+
+    assemblerObj = assembler(parser)
+
+    assemblerObj.runPassToStoreLoops(parser)
+    parser.resetParser()
+    assemblerObj.runSecondPass(parser)
     # print(sorted(Path(mod_path).glob('*')))
     # p = Path(src_path)
     # print(p)

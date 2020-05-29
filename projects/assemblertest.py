@@ -6,6 +6,9 @@ class TestAssembler(unittest.TestCase):
     def test_test(self):
         pass
 
+    def test_fun(self):
+        self.assertEqual(True, True)
+
     # def test_address(self):
     #     self.assertEqual(Assembler.get_address('@2'), '0000000000000010')
     #     self.assertEqual(Assembler.get_address('@3'), '0000000000000011')

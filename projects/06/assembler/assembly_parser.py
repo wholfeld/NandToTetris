@@ -1,11 +1,11 @@
 import re
-import symbolTable
+import symbol_table
 
 delimiters = "@", "//", "=", ";", "(", ")", " ",
 regex_pattern = '|'.join(map(re.escape, delimiters))
 
 
-class parser:
+class Parser:
 
     def __init__(self, file):
         print(file)
@@ -26,38 +26,38 @@ class parser:
                         self.commands.append(no_comments[0])
         self.current_command = self.commands[0]
 
-    def hasMoreCommands(self) -> bool:
+    def has_more_commands(self) -> bool:
         return self.current_location < len(self.commands)
 
     def advance(self):
         self.current_location += 1
-        if self.hasMoreCommands():
+        if self.has_more_commands():
             self.current_command = self.commands[self.current_location]
-            if commandType(self.current_command) != symbolTable.CommandType.L_COMMAND:
+            if command_type(self.current_command) != symbol_table.CommandType.L_COMMAND:
                 self.current_line += 1
 
-    def getCurrentCommand(self):
+    def get_current_command(self):
         return self.current_command
 
-    def getCurrentLine(self):
+    def get_current_line(self):
         return self.current_location
 
-    def resetParser(self):
+    def reset_parser(self):
         self.current_location = 0
 
 
-def getCommandPart(command, command_type):
-    if command_type == symbolTable.CommandPart.COMP:
+def get_command_part(command, command_type):
+    if command_type == symbol_table.CommandPart.COMP:
         if command.__contains__('='):
             return command.split('=')[1].split(';')[0]
         else:
             return '0'
-    if command_type == symbolTable.CommandPart.DEST:
+    if command_type == symbol_table.CommandPart.DEST:
         if command.__contains__('='):
             return command.split('=')[0]
         else:
             return command.split(';')[0]
-    if command_type == symbolTable.CommandPart.JUMP:
+    if command_type == symbol_table.CommandPart.JUMP:
         if command.__contains__(';'):
             return command.split(';')[1]
         else:
@@ -76,21 +76,21 @@ def dest(dest):
 
 
 def comp(comp):
-    return symbolTable.instructions_dict.get(comp)
+    return symbol_table.instructions_dict.get(comp)
 
 
 def jump(jump):
-    return symbolTable.jump_dict.get(jump)
+    return symbol_table.jump_dict.get(jump)
 
 
 def symbol(instruction: str):
     return re.split(regex_pattern, instruction)[1]
 
 
-def commandType(command_string: str):
+def command_type(command_string: str):
     if command_string.__contains__('('):
-        return symbolTable.CommandType.L_COMMAND
+        return symbol_table.CommandType.L_COMMAND
     if command_string.__contains__('@'):
-        return symbolTable.CommandType.A_COMMAND
+        return symbol_table.CommandType.A_COMMAND
     if command_string.__contains__('='):
-        return symbolTable.CommandType.C_COMMAND
+        return symbol_table.CommandType.C_COMMAND

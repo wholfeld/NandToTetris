@@ -12,7 +12,7 @@ class Parser:
         self.file = file
         self.commands = []
         self.current_location = 0
-        self.current_line = 1
+        self.current_line = 0
         self.current_command = ''
         with file.open() as f:
             for x in f:
@@ -32,16 +32,16 @@ class Parser:
 
     def advance(self):
         self.current_location += 1
+        if command_type(self.current_command) != symbol_table.CommandType.L_COMMAND:
+            self.current_line += 1
         if self.has_more_commands():
             self.current_command = self.commands[self.current_location]
-            if command_type(self.current_command) != symbol_table.CommandType.L_COMMAND:
-                self.current_line += 1
 
     def get_current_command(self):
         return self.current_command
 
     def get_current_line(self):
-        return self.current_location
+        return self.current_line
 
     def reset_parser(self):
         self.current_location = 0

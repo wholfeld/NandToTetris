@@ -1,12 +1,15 @@
 import symbol_table
 
+
 class BinaryGenerator():
     def __init__(self):
         self.openfile = 1
 
 
 def get_address(address: str) -> str:
-    address_int = int(address.replace('@', ''))
+    address_str = str(address).replace('@', '')
+    address_int = int(address_str)
+    
     bin_string = '{:016b}'.format(address_int)
     return bin_string
 

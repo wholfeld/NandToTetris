@@ -23,7 +23,8 @@ class Parser:
                         break
                     if char == "@" or char == "=" or char == ";" or char == "(":
                         no_comments = no_whitespace_str.split('/')
-                        self.commands.append(no_comments[0])
+                        c = no_comments[0].strip()
+                        self.commands.append(c)
         self.current_command = self.commands[0]
 
     def has_more_commands(self) -> bool:
@@ -44,6 +45,7 @@ class Parser:
 
     def reset_parser(self):
         self.current_location = 0
+        self.current_command = self.commands[0]
 
 
 def get_command_part(command, command_type):
@@ -92,5 +94,5 @@ def command_type(command_string: str):
         return symbol_table.CommandType.L_COMMAND
     if command_string.__contains__('@'):
         return symbol_table.CommandType.A_COMMAND
-    if command_string.__contains__('='):
+    if command_string.__contains__('=') or command_string.__contains__(';'):
         return symbol_table.CommandType.C_COMMAND

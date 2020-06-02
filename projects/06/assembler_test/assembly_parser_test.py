@@ -5,13 +5,6 @@ from context import assembly_parser
 
 class TestAssemblyParser(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        pass
-
-    def test_test(self):
-        pass
-
     def test_command(self):
         self.assertEqual(assembly_parser.command_type('@5'), symbol_table.CommandType.A_COMMAND)
         self.assertEqual(assembly_parser.command_type('(hi)'), symbol_table.CommandType.L_COMMAND)

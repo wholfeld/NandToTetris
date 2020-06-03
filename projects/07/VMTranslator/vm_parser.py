@@ -1,14 +1,26 @@
+import os
+from symbol_table import vm_command
 
-class VMTranslator:
+
+class VMParser:
 
     def __init__(self, file):
-        pass
+        self.file = file
+        self.position = 0
+        self.commands_array = []
+        for l in file:
+            clean_command = remove_whitespace(l)
+            if len(clean_command) > 0:
+                self.commands_array.append(clean_command)
 
     def has_more_commands(self) -> bool:
-        pass
+        return self.position < len(self.commands_array) - 1
 
     def advance(self):
-        pass
+        self.position += 1
+
+    def get_command(self) -> bool:
+        return self.commands_array[self.position].split()
 
     def arg1(self):
         pass
@@ -16,8 +28,11 @@ class VMTranslator:
     def arg2(self):
         pass
 
+
 def command_type(command):
-    pass
+    commands = command.split()
+    return vm_command.get(commands[0])
+
 
 def remove_whitespace(command: str) -> str:
     no_whitespace_str = command.strip()

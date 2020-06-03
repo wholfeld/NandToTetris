@@ -8,7 +8,7 @@ from pathlib import Path
 class Assembler():
     def __init__(self, parser):
         self.user_created_symbols = {}
-        self.symbolIndex = 16
+        self.new_symbol_index = 16
 
     def run_pass_to_store_symbols(self, parser):
         while parser.has_more_commands():
@@ -35,9 +35,9 @@ class Assembler():
                     elif self.user_created_symbols.get(a):
                         f.write(binary_generator.get_address(self.user_created_symbols.get(a)) + '\n')
                     else:
-                        f.write(binary_generator.get_address(self.symbolIndex) + '\n')
-                        self.user_created_symbols.update({a: self.symbolIndex})
-                        self.symbolIndex += 1
+                        f.write(binary_generator.get_address(self.new_symbol_index) + '\n')
+                        self.user_created_symbols.update({a: self.new_symbol_index})
+                        self.new_symbol_index += 1
             parser.advance()
         f.close()
 

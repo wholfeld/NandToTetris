@@ -1,4 +1,3 @@
-import os
 from symbol_table import vm_command
 
 
@@ -8,13 +7,14 @@ class VMParser:
         self.file = file
         self.position = 0
         self.commands_array = []
-        for l in file:
-            clean_command = remove_whitespace(l)
-            if len(clean_command) > 0:
-                self.commands_array.append(clean_command)
+        with file.open() as f:
+            for l in f:
+                clean_command = remove_whitespace(l)
+                if len(clean_command) > 0:
+                    self.commands_array.append(clean_command)
 
     def has_more_commands(self) -> bool:
-        return self.position < len(self.commands_array) - 1
+        return self.position < len(self.commands_array)
 
     def advance(self):
         self.position += 1

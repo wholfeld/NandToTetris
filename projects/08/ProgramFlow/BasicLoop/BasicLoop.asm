@@ -23,6 +23,7 @@ M=D
 
 // create label LOOP_START
 (LOOP_START)
+
 // Writing push from argument 0
 @ARG
 D=M
@@ -134,6 +135,7 @@ AM=M-1
 D=M
 @LOOP_START
 D;JGT
+
 // Writing push from local 0
 @LCL
 D=M

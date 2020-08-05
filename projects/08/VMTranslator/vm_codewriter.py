@@ -186,13 +186,16 @@ def write_init():
 def write_label(label_name: str):
     return f'''// create label {label_name}
 ({label_name})
+
 '''
 
 
 # Writes assembly code that effects the goto command.
 def write_goto(label_name: str):
-    return f'''
-t
+    return f'''// goto {label_name}
+@{label_name}
+0;JMP
+
 '''
 
 
@@ -204,6 +207,7 @@ AM=M-1
 D=M
 @{label_name}
 D;JGT
+
 '''
 
 

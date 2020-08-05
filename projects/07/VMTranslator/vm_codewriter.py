@@ -111,7 +111,7 @@ def write_push(commands: []):
     if commands[1] == 'constant':
         location = f'''@{commands[2]}
 D=A'''
-    elif commands[1] == 'temp' or commands[1] == 'static':
+    elif commands[1] == 'temp' or commands[1] == 'static' or commands[1] == 'pointer':
         array_num = int(location_table.get(commands[1])) + int(commands[2])
         location = f'''@{array_num}
 D=M'''
@@ -137,7 +137,7 @@ def write_pop(commands: []):
     # pop local 0
     # pop that 5
     pop_type = commands[1]
-    if pop_type == 'static' or pop_type == 'temp':
+    if pop_type == 'static' or pop_type == 'temp' or pop_type == 'pointer':
         array_num = int(location_table.get(commands[1])) + int(commands[2])
         return f'''// Writing {commands[0]} to {commands[1]} {commands[2]}
 @SP

@@ -6,7 +6,13 @@ A=M
 M=D
 @SP
 M=M+1
+
 // Writing pop to pointer 0
+@SP
+AM=M-1
+D=M
+@3
+M=D
 
 // Writing push from constant 3040
 @3040
@@ -16,7 +22,13 @@ A=M
 M=D
 @SP
 M=M+1
+
 // Writing pop to pointer 1
+@SP
+AM=M-1
+D=M
+@4
+M=D
 
 // Writing push from constant 32
 @32
@@ -26,7 +38,22 @@ A=M
 M=D
 @SP
 M=M+1
+
 // Writing pop to this 2
+// go to location to deposit
+@THIS
+D=M
+@2
+D=D+A
+@R13
+M=D
+//get top of stack
+@SP
+AM=M-1
+D=M
+@R13
+A=M
+M=D
 
 // Writing push from constant 46
 @46
@@ -36,24 +63,41 @@ A=M
 M=D
 @SP
 M=M+1
+
 // Writing pop to that 6
+// go to location to deposit
+@THAT
+D=M
+@6
+D=D+A
+@R13
+M=D
+//get top of stack
+@SP
+AM=M-1
+D=M
+@R13
+A=M
+M=D
 
 // Writing push from pointer 0
-@0
-D=A
+@3
+D=M
 @SP
 A=M
 M=D
 @SP
 M=M+1
+
 // Writing push from pointer 1
-@1
-D=A
+@4
+D=M
 @SP
 A=M
 M=D
 @SP
 M=M+1
+
  // Writing arithmetic command add
 @SP
 A=M-1
@@ -63,14 +107,19 @@ M=M+D
 D=A+1
 @SP
 M=D
+
 // Writing push from this 2
+@THIS
+D=M
 @2
-D=A
+A=D+A
+D=M
 @SP
 A=M
 M=D
 @SP
 M=M+1
+
  // Writing arithmetic command sub
 @SP
 A=M-1
@@ -80,14 +129,19 @@ M=M-D
 D=A+1
 @SP
 M=D
+
 // Writing push from that 6
+@THAT
+D=M
 @6
-D=A
+A=D+A
+D=M
 @SP
 A=M
 M=D
 @SP
 M=M+1
+
  // Writing arithmetic command add
 @SP
 A=M-1
@@ -97,3 +151,4 @@ M=M+D
 D=A+1
 @SP
 M=D
+

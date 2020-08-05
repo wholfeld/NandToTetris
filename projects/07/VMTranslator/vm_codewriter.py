@@ -1,4 +1,4 @@
-from symbol_table import vm_command, command_types, math_commands, two_operands, comparative
+from symbol_table import vm_command, command_types, math_commands, two_operands, comparative, location_table
 
 
 class VMCodewriter:
@@ -28,10 +28,10 @@ class VMCodewriter:
         if command_type == command_types.C_PUSH or \
            command_type == command_types.C_POP:
             asm_commands = write_push_pop(commands)
-        
+
         # write asm_commands to file
         self.file.write(asm_commands)
-    
+
     def close(self):
         self.file.close()
 
@@ -80,6 +80,7 @@ M=-1
 (END{iteration})
 @SP
 M=M+1
+
 '''
 
 
@@ -94,6 +95,7 @@ M=M{arithmetic_symbol}D
 D=A+1
 @SP
 M=D
+
 '''
 
 
@@ -105,18 +107,29 @@ def write_push_pop(commands: []):
 
 
 def write_push(commands: []):
-    location = commands[1]
-    if location == 'constant':
-        location = commands[2]
-    
-    return f'''// Writing {commands[0]} from {commands[1]} {commands[2]}
+    location = ''
+    if commands[1] == 'constant':
+        location = f'''@{commands[2]}
+D=A'''
+    elif commands[1] == 'temp' or commands[1] == 'static':
+        array_num = int(location_table.get(commands[1])) + int(commands[2])
+        location = f'''@{array_num}
+D=M'''
+    else:
+        location = f'''@{location_table.get(commands[1])}
+D=M
 @{commands[2]}
-D=A
+A=D+A
+D=M'''
+
+    return f'''// Writing {commands[0]} from {commands[1]} {commands[2]}
+{location}
 @SP
 A=M
 M=D
 @SP
 M=M+1
+
 '''
 
 
@@ -124,20 +137,31 @@ def write_pop(commands: []):
     # pop local 0
     # pop that 5
     pop_type = commands[1]
-
-    pop_location = ''
-    #todo
-    if pop_type == 'static'
-
-        pop_location = f'''
-
-'''
-
-    return f'''// Writing {commands[0]} to {commands[1]} {commands[2]}
-// get top of stack
+    if pop_type == 'static' or pop_type == 'temp':
+        array_num = int(location_table.get(commands[1])) + int(commands[2])
+        return f'''// Writing {commands[0]} to {commands[1]} {commands[2]}
 @SP
 AM=M-1
+D=M
+@{array_num}
+M=D
 
+'''
+    else:
+        return f'''// Writing {commands[0]} to {commands[1]} {commands[2]}
 // go to location to deposit
-@
+@{location_table.get(commands[1])}
+D=M
+@{commands[2]}
+D=D+A
+@R13
+M=D
+//get top of stack
+@SP
+AM=M-1
+D=M
+@R13
+A=M
+M=D
+
 '''

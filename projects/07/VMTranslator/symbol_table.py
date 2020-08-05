@@ -76,4 +76,6 @@ location_table = {
     'this': 'THIS',
     'that': 'THAT',
     'argument': 'ARG',
+    'temp': '5',
+    'static': '16'
 }

@@ -24,10 +24,21 @@ class VMCodewriter:
                 self.jump_count += 1
             else:
                 asm_commands = write_one_operand_command(commands[0])
-
-        if command_type == command_types.C_PUSH or \
-           command_type == command_types.C_POP:
+        elif command_type == command_types.C_PUSH or \
+        command_type == command_types.C_POP:
             asm_commands = write_push_pop(commands)
+        elif command_type == command_types.C_LABEL:
+            asm_commands = write_label(commands[1])
+        elif command_type == command_types.C_GOTO:
+            asm_commands = write_goto(commands[1])
+        elif command_type == command_types.C_IF:
+            asm_commands = write_if(commands[1])
+        elif command_type == command_types.C_FUNCTION:
+            asm_commands = write_function(commands[1], int(commands[3]))
+        elif command_type == command_types.C_RETURN:
+            asm_commands = write_return()
+        elif command_type == command_types.C_CALL:
+            asm_commands = write_call(commands[1], int(commands[3]))
 
         # write asm_commands to file
         self.file.write(asm_commands)
@@ -163,3 +174,49 @@ A=M
 M=D
 
 '''
+
+
+# Writes assembly code that effects the VM initialization, also called bootstrap code. 
+# This code must be placed at the beginning of the output file.
+def write_init():
+    return ''
+
+
+# Writes assembly code that effects the label command.
+def write_label(label_name: str):
+    return f'''// create label {label_name}
+({label_name})
+'''
+
+
+# Writes assembly code that effects the goto command.
+def write_goto(label_name: str):
+    return f'''
+t
+'''
+
+
+# Writes assembly code that effects the if-goto command.
+def write_if(label_name: str):
+    return f'''// if goto {label_name}
+@SP
+AM=M-1
+D=M
+@{label_name}
+D;JGT
+'''
+
+
+# Write assembly code that effects the call command.
+def write_call(functionName: str, numArgs: int):
+    return ''
+
+
+# Writes assembly code that effects the return commands
+def write_return():
+    return ''
+
+
+# Writes assembly code that effects the function command.
+def write_function(functionName: str, numLocals: int):
+    return ''

@@ -40,14 +40,12 @@ M=D
 M=M+1
 
 // Writing pop to this 2
-// go to location to deposit
 @THIS
 D=M
 @2
 D=D+A
 @R13
 M=D
-//get top of stack
 @SP
 AM=M-1
 D=M
@@ -65,14 +63,12 @@ M=D
 M=M+1
 
 // Writing pop to that 6
-// go to location to deposit
 @THAT
 D=M
 @6
 D=D+A
 @R13
 M=D
-//get top of stack
 @SP
 AM=M-1
 D=M

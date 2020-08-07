@@ -11,7 +11,7 @@ def format_folder(folder_name: str) -> str:
 
 def get_files_location() -> str:
     # Open files in folder.
-    folder_location = format_folder('ProgramFlow/FibonacciSeries')
+    folder_location = format_folder('FunctionCalls/SimpleFunction')
     if len(sys.argv) > 1:
         folder_location = format_folder(sys.argv[1])
 

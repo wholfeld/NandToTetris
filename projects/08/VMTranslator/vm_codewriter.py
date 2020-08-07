@@ -15,6 +15,7 @@ class VMCodewriter:
         # commands = command.split()
         command_type = vm_command.get(commands[0])
         asm_commands = ''
+        print(commands)
         if command_type == command_types.C_ARITHMETIC:
             arithmetic_command = commands[0]
             if arithmetic_command in two_operands:
@@ -34,11 +35,11 @@ class VMCodewriter:
         elif command_type == command_types.C_IF:
             asm_commands = write_if(commands[1])
         elif command_type == command_types.C_FUNCTION:
-            asm_commands = write_function(commands[1], int(commands[3]))
+            asm_commands = write_function(commands[1], int(commands[2]))
         elif command_type == command_types.C_RETURN:
             asm_commands = write_return()
         elif command_type == command_types.C_CALL:
-            asm_commands = write_call(commands[1], int(commands[3]))
+            asm_commands = write_call(commands[1], int(commands[2]))
 
         # write asm_commands to file
         self.file.write(asm_commands)
@@ -206,21 +207,89 @@ def write_if(label_name: str):
 AM=M-1
 D=M
 @{label_name}
-D;JGT
+D;JNE
 
 '''
 
 
 # Write assembly code that effects the call command.
-def write_call(functionName: str, numArgs: int):
+def write_call(function_name: str, num_args: int):
     return ''
 
 
 # Writes assembly code that effects the return commands
 def write_return():
-    return ''
+    return f'''// writing return
+//setup local as frame as R13
+@LCL
+D=M
+@R13
+M=D
+//put return address in variable
+@5
+A=D-A
+D=M
+@R14
+M=D
+//Reposition the return value for the caller
+@SP
+A=M-1
+D=M
+@ARG
+A=M
+M=D
+//Restore SP of the caller
+D=A+1
+@SP
+M=D
+//Restore THAT of the caller
+@R13
+A=M-1
+D=M
+@THAT
+M=D
+//Restore THIS of the caller
+@R13
+D=M
+@2
+A=D-A
+D=M
+@THIS
+M=D
+//Restore ARG of the caller
+@R13
+D=M
+@3
+A=D-A
+D=M
+@ARG
+M=D
+//Restore LCL of the caller
+@R13
+D=M
+@4
+A=D-A
+D=M
+@LCL
+M=D
+//Goto return-address (in the caller's code)
+'''
 
 
 # Writes assembly code that effects the function command.
-def write_function(functionName: str, numLocals: int):
-    return ''
+def write_function(function_name: str, num_locals: int):
+    return f'''// function {function_name} with {num_locals} locals
+@{num_locals}
+D=A
+@R13
+M=D
+({function_name}$setup_locals)
+@R13
+MD=M-1
+@{function_name}$locals_done
+D;JLT
+{write_push(['push', 'constant', '0'])}
+@{function_name}$setup_locals
+D;JMP
+({function_name}$locals_done)
+'''

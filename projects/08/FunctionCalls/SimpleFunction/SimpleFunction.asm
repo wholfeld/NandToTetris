@@ -157,3 +157,6 @@ D=M
 @LCL
 M=D
 //Goto return-address (in the caller's code)
+@R14
+A=M
+0;JMP

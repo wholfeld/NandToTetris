@@ -6,15 +6,18 @@ class VMCodewriter:
     def __init__(self, file_name: str):
         self.file_name = file_name
         self.file = open(f'{file_name}', 'w')
+        self.class_name = ''
         self.jump_count = 0
 
-    def set_file_name(self: object, file_name: str):
-        pass
+    def set_class_name(self: object, class_name: str):
+        self.class_name = class_name
 
     def write_command(self, commands: []):
         # commands = command.split()
         command_type = vm_command.get(commands[0])
         asm_commands = ''
+        class_name = self.class_name.name.split('/')[-1]
+        class_name = class_name.split('.')[0]
         print(commands)
         if command_type == command_types.C_ARITHMETIC:
             arithmetic_command = commands[0]
@@ -25,9 +28,10 @@ class VMCodewriter:
                 self.jump_count += 1
             else:
                 asm_commands = write_one_operand_command(commands[0])
-        elif command_type == command_types.C_PUSH or \
-        command_type == command_types.C_POP:
-            asm_commands = write_push_pop(commands)
+        elif command_type == command_types.C_PUSH:
+            asm_commands = write_push(commands, class_name)
+        elif command_type == command_types.C_POP:
+            asm_commands = write_pop(commands, class_name)
         elif command_type == command_types.C_LABEL:
             asm_commands = write_label(commands[1])
         elif command_type == command_types.C_GOTO:
@@ -35,7 +39,10 @@ class VMCodewriter:
         elif command_type == command_types.C_IF:
             asm_commands = write_if(commands[1])
         elif command_type == command_types.C_FUNCTION:
-            asm_commands = write_function(commands[1], int(commands[2]))
+            if commands[1] == 'Sys.init':
+                asm_commands = write_init()
+            else:
+                asm_commands = write_function(commands[1], int(commands[2]))
         elif command_type == command_types.C_RETURN:
             asm_commands = write_return()
         elif command_type == command_types.C_CALL:
@@ -111,21 +118,17 @@ M=D
 '''
 
 
-def write_push_pop(commands: []):
-    if vm_command.get(commands[0]) == command_types.C_PUSH:
-        return write_push(commands)
-    else:
-        return write_pop(commands)
-
-
-def write_push(commands: []):
+def write_push(commands: [], file_name: str):
     location = ''
     if commands[1] == 'constant':
         location = f'''@{commands[2]}
 D=A'''
-    elif commands[1] == 'temp' or commands[1] == 'static' or commands[1] == 'pointer':
+    elif commands[1] == 'temp' or commands[1] == 'pointer':
         array_num = int(location_table.get(commands[1])) + int(commands[2])
         location = f'''@{array_num}
+D=M'''
+    elif commands[1] == 'static':
+        location = f'''@{file_name}.{commands[2]}
 D=M'''
     else:
         location = f'''@{location_table.get(commands[1])}
@@ -145,12 +148,15 @@ M=M+1
 '''
 
 
-def write_pop(commands: []):
+def write_pop(commands: [], file_name: str):
     # pop local 0
     # pop that 5
     pop_type = commands[1]
     if pop_type == 'static' or pop_type == 'temp' or pop_type == 'pointer':
-        array_num = int(location_table.get(commands[1])) + int(commands[2])
+        if pop_type == 'static':
+            array_num = f'{file_name}.{commands[2]}'
+        else:
+            array_num = int(location_table.get(commands[1])) + int(commands[2])
         return f'''// Writing {commands[0]} to {commands[1]} {commands[2]}
 @SP
 AM=M-1
@@ -180,7 +186,58 @@ M=D
 # Writes assembly code that effects the VM initialization, also called bootstrap code. 
 # This code must be placed at the beginning of the output file.
 def write_init():
-    return ''
+    return f'''//init function
+@256
+D=A
+@SP
+M=D
+// push return address
+{write_push(['push', 'constant', '256'], '')}
+// Save LCL of the calling function
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Save ARG of the calling function
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Save THIS of the calling function
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Save THAT of the calling function
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Repostion ARG for current args
+@SP
+D=M
+@5
+D=D-A
+@ARG
+M=D
+// Reposition LCL
+@SP
+D=M
+@LCL
+M=D
+'''
 
 
 # Writes assembly code that effects the label command.
@@ -214,7 +271,59 @@ D;JNE
 
 # Write assembly code that effects the call command.
 def write_call(function_name: str, num_args: int):
-    return ''
+    return f'''// Calling function {function_name}
+// push return address
+{write_push(['push', 'constant', f'{function_name}$return_address'], '')}
+// Save LCL of the calling function
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Save ARG of the calling function
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Save THIS of the calling function
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Save THAT of the calling function
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// Repostion ARG for current args
+@SP
+D=M
+@{num_args + 5}
+D=D-A
+@ARG
+M=D
+// Reposition LCL
+@SP
+D=M
+@LCL
+M=D
+// Transfer control
+@{function_name}
+0;JMP
+//return label
+({function_name}$return_address)
+'''
 
 
 # Writes assembly code that effects the return commands
@@ -273,12 +382,16 @@ D=M
 @LCL
 M=D
 //Goto return-address (in the caller's code)
+@R14
+A=M
+0;JMP
 '''
 
 
 # Writes assembly code that effects the function command.
 def write_function(function_name: str, num_locals: int):
     return f'''// function {function_name} with {num_locals} locals
+({function_name})
 @{num_locals}
 D=A
 @R13
@@ -288,7 +401,7 @@ M=D
 MD=M-1
 @{function_name}$locals_done
 D;JLT
-{write_push(['push', 'constant', '0'])}
+{write_push(['push', 'constant', '0'], '')}
 @{function_name}$setup_locals
 D;JMP
 ({function_name}$locals_done)

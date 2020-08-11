@@ -67,10 +67,10 @@ M=D
 @SP
 M=M+1
 
-// Calling function Main.fibonacci
+// Calling function Main.fibonacci0
 // push return address
-// Writing push from constant Main.fibonacci$return_address
-@Main.fibonacci$return_address
+// Writing push from constant Main.fibonacci0$return_address
+@Main.fibonacci0$return_address
 D=A
 @SP
 A=M
@@ -127,7 +127,7 @@ M=D
 @Main.fibonacci
 0;JMP
 //return label
-(Main.fibonacci$return_address)
+(Main.fibonacci0$return_address)
 // create label WHILE
 (WHILE)
 
@@ -321,10 +321,10 @@ D=A+1
 @SP
 M=D
 
-// Calling function Main.fibonacci
+// Calling function Main.fibonacci1
 // push return address
-// Writing push from constant Main.fibonacci$return_address
-@Main.fibonacci$return_address
+// Writing push from constant Main.fibonacci1$return_address
+@Main.fibonacci1$return_address
 D=A
 @SP
 A=M
@@ -381,7 +381,7 @@ M=D
 @Main.fibonacci
 0;JMP
 //return label
-(Main.fibonacci$return_address)
+(Main.fibonacci1$return_address)
 // Writing push from argument 0
 @ARG
 D=M
@@ -413,10 +413,10 @@ D=A+1
 @SP
 M=D
 
-// Calling function Main.fibonacci
+// Calling function Main.fibonacci2
 // push return address
-// Writing push from constant Main.fibonacci$return_address
-@Main.fibonacci$return_address
+// Writing push from constant Main.fibonacci2$return_address
+@Main.fibonacci2$return_address
 D=A
 @SP
 A=M
@@ -473,7 +473,7 @@ M=D
 @Main.fibonacci
 0;JMP
 //return label
-(Main.fibonacci$return_address)
+(Main.fibonacci2$return_address)
  // Writing arithmetic command add
 @SP
 A=M-1

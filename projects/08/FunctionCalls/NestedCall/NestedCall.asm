@@ -90,10 +90,10 @@ D=M
 @4
 M=D
 
-// Calling function Sys.main
+// Calling function Sys.main0
 // push return address
-// Writing push from constant Sys.main$return_address
-@Sys.main$return_address
+// Writing push from constant Sys.main0$return_address
+@Sys.main0$return_address
 D=A
 @SP
 A=M
@@ -150,7 +150,7 @@ M=D
 @Sys.main
 0;JMP
 //return label
-(Sys.main$return_address)
+(Sys.main0$return_address)
 // Writing pop to temp 1
 @SP
 AM=M-1
@@ -299,10 +299,10 @@ M=D
 @SP
 M=M+1
 
-// Calling function Sys.add12
+// Calling function Sys.add121
 // push return address
-// Writing push from constant Sys.add12$return_address
-@Sys.add12$return_address
+// Writing push from constant Sys.add121$return_address
+@Sys.add121$return_address
 D=A
 @SP
 A=M
@@ -359,7 +359,7 @@ M=D
 @Sys.add12
 0;JMP
 //return label
-(Sys.add12$return_address)
+(Sys.add121$return_address)
 // Writing pop to temp 0
 @SP
 AM=M-1

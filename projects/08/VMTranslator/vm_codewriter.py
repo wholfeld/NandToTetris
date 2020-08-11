@@ -8,6 +8,7 @@ class VMCodewriter:
         self.file = open(f'{file_name}', 'w')
         self.class_name = ''
         self.jump_count = 0
+        self.call_count = 0
 
     def set_class_name(self: object, class_name: str):
         self.class_name = class_name
@@ -46,7 +47,8 @@ class VMCodewriter:
         elif command_type == command_types.C_RETURN:
             asm_commands = write_return()
         elif command_type == command_types.C_CALL:
-            asm_commands = write_call(commands[1], int(commands[2]))
+            asm_commands = write_call(commands[1], int(commands[2]), self.call_count)
+            self.call_count += 1
 
         # write asm_commands to file
         self.file.write(asm_commands)
@@ -270,10 +272,11 @@ D;JNE
 
 
 # Write assembly code that effects the call command.
-def write_call(function_name: str, num_args: int):
-    return f'''// Calling function {function_name}
+def write_call(function_name: str, num_args: int, call_count: int):
+    function_name_with_call_count = function_name + str(call_count)
+    return f'''// Calling function {function_name_with_call_count}
 // push return address
-{write_push(['push', 'constant', f'{function_name}$return_address'], '')}
+{write_push(['push', 'constant', f'{function_name_with_call_count}$return_address'], '')}
 // Save LCL of the calling function
 @LCL
 D=M
@@ -322,7 +325,7 @@ M=D
 @{function_name}
 0;JMP
 //return label
-({function_name}$return_address)
+({function_name_with_call_count}$return_address)
 '''
 
 

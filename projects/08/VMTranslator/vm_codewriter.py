@@ -14,12 +14,10 @@ class VMCodewriter:
         self.class_name = class_name
 
     def write_command(self, commands: []):
-        # commands = command.split()
         command_type = vm_command.get(commands[0])
         asm_commands = ''
         class_name = self.class_name.name.split('/')[-1]
         class_name = class_name.split('.')[0]
-        print(commands)
         if command_type == command_types.C_ARITHMETIC:
             arithmetic_command = commands[0]
             if arithmetic_command in two_operands:

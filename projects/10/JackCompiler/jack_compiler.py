@@ -15,29 +15,27 @@ class JackCompiler:
     def compile_class(self):
         self.write('<class>')
         self.indentation += 1
-        token = ''
-        keyword = self.parser.get_token()[1]
+        class_var = {'static', 'field'}
+        function_types = {'constructor', 'method', 'function'}
 
         # check for class var dec
         while self.parser.has_more_commands():
             token = self.parser.get_token()
             keyword = token[1]
-            if keyword == 'static' or keyword == 'field':
+            if keyword in class_var:
                 self.compile_class_var_dec()
-            elif keyword == 'method':
+            elif keyword in function_types:
                 break
             else:
-                print(token)
-                self.write(token[2])
-                self.parser.advance()
+                self.write_advance()
 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
-            if keyword == 'method':
+            keyword = token[1]
+            if keyword in function_types:
                 self.compile_subroutine()
             else:
-                self.write(token[2])
-                self.parser.advance()
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</class>')
@@ -46,8 +44,6 @@ class JackCompiler:
     def compile_class_var_dec(self):
         self.write('<classVarDec>')
         self.indentation += 1
-        token = ''
-        keyword = self.parser.get_token()[1]
         break_words = {'function', 'method', '}'}
 
         # check for class var dec
@@ -57,64 +53,227 @@ class JackCompiler:
             if keyword in break_words:
                 break
             else:
-                print(token)
-                self.write(token[2])
-                self.parser.advance()
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</classVarDec>')
 
     # Compiles a complete method, function, or constructor.
     def compile_subroutine(self):
-        self.parser.advance()
-        return ''
+        self.write('<subroutineDec>')
+        self.indentation += 1
+
+        # 
+        while self.parser.has_more_commands():
+            token = self.parser.get_token()
+            keyword = token[1]
+            if keyword == '(':
+                self.compile_parameter_list()
+            elif keyword == '{':
+                self.compile_subroutine_body()
+            else:
+                self.write_advance()
+
+        while self.parser.has_more_commands():
+            token = self.parser.get_token()
+            keyword = token[1]
+            if keyword == '{':
+                self.compile_subroutine_body()
+            else:
+                break
+
+        self.indentation -= 1
+        self.write('</subroutineDec>')
+
+    def compile_subroutine_body(self):
+        self.write('<subroutineBody>')
+        self.indentation += 1
+        break_words = {'}'}
+
+        # check for class var dec
+        while self.parser.has_more_commands():
+            token = self.parser.get_token()
+            keyword = token[1]
+            if keyword in break_words:
+                break
+            elif keyword == 'var':
+                self.compile_var_dec()
+            else:
+                self.write_advance()
+
+        self.indentation -= 1
+        self.write('</subroutineBody>')
 
     # Compiles a (possibly empty) parameter list, not including the enclosing "()".
     def compile_parameter_list(self):
-        return ''
+        line = self.parser.get_token()[2]
+        self.write(line)
+        self.write('<parameterList>')
+        self.parser.advance()
+        self.indentation += 1
+
+        # check for class var dec
+        while self.parser.has_more_commands():
+            token = self.parser.get_token()
+            keyword = token[1]
+            if keyword == ')':
+                break
+            else:
+                self.write_advance()
+
+        self.indentation -= 1
+        self.write('</paramterList>')
 
     # Compiles a var declaration.
     def compile_var_dec(self):
-        return ''
+        self.write('<varDec>')
+        self.indentation += 1
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == '=':
+                self.compile_expression()
+            elif keyword == ';':
+                self.write_advance()
+                break
+            else:
+                self.write_advance()
+
+        self.indentation -= 1
+        self.write('</varDec>')
 
     # Compiles a sequence of statements, not including the enclosing "{}".
     def compile_statements(self):
-        return ''
+        self.write('<statements>')
+        self.indentation += 1
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == 'if':
+                self.compile_if()
+            elif keyword == 'let':
+                self.compile_let()
+            elif keyword == 'while':
+                self.compile_while()
+            elif keyword == 'return':
+                self.compile_return()
+            elif keyword == '}':
+                break
+            else:
+                self.write_advance()
+
+        self.indentation -= 1
+        self.write('</statements>')
 
     # Compiles a do statement.
     def compile_do(self):
-        return ''
+        self.write('<doStatement>')
+        self.indentation += 1
+
+        self.parser.advance()
+
+        self.indentation -= 1
+        self.write('</doStatement>')
 
     # Compiles a let statement.
     def compile_let(self):
-        return ''
+        self.write('<letStatement>')
+        self.indentation += 1
+
+        self.parser.advance()
+
+        self.indentation -= 1
+        self.write('</letStatement>')
 
     # Compiles a while statement.
     def compile_while(self):
-        return ''
+        self.write('<whileStatement>')
+        self.indentation += 1
+
+        self.parser.advance()
+
+        self.indentation -= 1
+        self.write('</whileStatement>')
 
     # Compiles a return.
     def compile_return(self):
-        return ''
+        self.write('<returnStatement>')
+        self.indentation += 1
+
+        self.parser.advance()
+
+        self.indentation -= 1
+        self.write('</returnStatement>')
 
     # Compiles an if statement, possibly with a trailing else clause.
     def compile_if(self):
-        return ''
+        self.write('<ifStatement>')
+        self.indentation += 1
+
+        self.parser.advance()
+
+        self.indentation -= 1
+        self.write('</ifStatement>')
 
     # Compiles an expression.
     def compile_expression(self):
-        return ''
+        self.write('<expression>')
+        self.indentation += 1
+        term_types = {'stringConstant', 'identifier', 'integerConstant'}
+        break_keywords = {')'}
+
+        while self.parser.has_more_commands():
+            token = self.parser.get_token()
+            keyword = token[1]
+            token_type = token[0]
+            if keyword in break_keywords:
+                break
+            elif token_type in term_types:
+                self.compile_term()
+            else:
+                self.write_advance()
+
+        self.indentation -= 1
+        self.write('</expression>')
 
     # Compiles a term. This routine is faced with a slight difficulty when traing to decide between some of the alternative parsing rules.
     def compile_term(self):
-        return ''
+        self.write('<term>')
+        self.indentation += 1
+        token = self.parser.get_token()
+        break_set = {';', ')'}
+
+        while self.parser.has_more_commands():
+            token = self.parser.get_token()
+            keyword = token[1]
+            token_type = token[0]
+            if keyword == '(':
+                self.compile_expression_list()
+            # finds a ; or )
+            elif keyword in break_set:
+                break
+            # is not a . to commect terms
+            elif token_type == 'symbol' and keyword != '.':
+                break
+            else:
+                self.write_advance()
+
+        self.indentation -= 1
+        self.write('</term>')
 
     # Compiles a (possibly empty) comma-seperated list of expressions.
     def compile_expression_list(self):
-        return ''
+        self.write('<ifStatement>')
+        self.indentation += 1
+
+        self.indentation -= 1
+        self.write('</ifStatement>')
+
+    def write_advance(self):
+        line = self.parser.get_token()[2]
+        self.write(line)
+        self.parser.advance()
 
     def write(self, str_to_write):
         #self.file.write('\t' * self.indentation + str_to_write + '\n')
         # str_to_wrtie = '\t' * self.indentation + str_to_write + '\n'
         # print(str_to_write)
-        self.file.write('\t' * self.indentation + str_to_write + '\n')
+        self.file.write('  ' * self.indentation + str_to_write + '\n')

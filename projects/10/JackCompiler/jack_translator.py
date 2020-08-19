@@ -8,7 +8,7 @@ from xml_parser import XMLParser
 
 def get_files_location() -> str:
     # Open files in folder.
-    folder_location = format_folder('ExpressionLessSquareWarrick')
+    folder_location = format_folder('ArrayTestWarrick')
     if len(sys.argv) > 1:
         folder_location = format_folder(sys.argv[1])
 

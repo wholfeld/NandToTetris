@@ -1,0 +1,46 @@
+<class>
+	<keyword> class </keyword>
+	<identifier> SquareGame </identifier>
+	<symbol> { </symbol>
+	<classVarDec>
+		<keyword> field </keyword>
+		<identifier> Square </identifier>
+		<identifier> square </identifier>
+	</classVarDec>
+	<symbol> ; </symbol>
+	<classVarDec>
+		<keyword> field </keyword>
+		<keyword> int </keyword>
+		<identifier> direction </identifier>
+	</classVarDec>
+	<symbol> ; </symbol>
+	<keyword> constructor </keyword>
+	<identifier> SquareGame </identifier>
+	<identifier> new </identifier>
+	<symbol> ( </symbol>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+	<keyword> let </keyword>
+	<identifier> square </identifier>
+	<symbol> = </symbol>
+	<identifier> Square </identifier>
+	<symbol> . </symbol>
+	<identifier> new </identifier>
+	<symbol> ( </symbol>
+	<integerConstant> 0 </integerConstant>
+	<symbol> , </symbol>
+	<integerConstant> 0 </integerConstant>
+	<symbol> , </symbol>
+	<integerConstant> 30 </integerConstant>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+	<keyword> let </keyword>
+	<identifier> direction </identifier>
+	<symbol> = </symbol>
+	<integerConstant> 0 </integerConstant>
+	<symbol> ; </symbol>
+	<keyword> return </keyword>
+	<keyword> this </keyword>
+	<symbol> ; </symbol>
+	<symbol> } </symbol>
+</class>

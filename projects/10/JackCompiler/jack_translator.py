@@ -2,14 +2,16 @@ import sys
 from pathlib import Path
 from jack_parser import JackParser
 from jack_tokenizer import JackTokenizer
+from jack_compiler import JackCompiler
+from xml_parser import XMLParser
 
 
 def get_files_location() -> str:
     # Open files in folder.
-    folder_location = format_folder('SquareWarrick')
+    folder_location = format_folder('ExpressionLessSquareWarrick')
     if len(sys.argv) > 1:
         folder_location = format_folder(sys.argv[1])
-    
+
     mod_path = Path(__file__).parent
     src_path = (mod_path / folder_location).resolve()
     return src_path
@@ -24,6 +26,11 @@ def get_jack_list(src_path) -> list:
     return jack_list
 
 
+def get_tokens_list(src_path) -> list:
+    xml_list = list(src_path.glob('*T.xml'))
+    return xml_list
+
+
 def open_jack_files(jack_list, src_path):
     # xml_name = src_path.name + '.xml'
     # file_name = (src_path / xml_name).resolve()
@@ -36,10 +43,15 @@ def open_jack_files(jack_list, src_path):
     #         sorted_jack_list.append(jack_list[i])
 
     for file in jack_list:
+        write_token_xml_file(file)
+
+
+def open_xml_files(xml_tokens_list, stc_path):
+    for file in xml_tokens_list:
         write_xml_file(file)
 
 
-def write_xml_file(file):
+def write_token_xml_file(file):
     # Get command and pass to codewriter.
     parser = JackParser(file)
     file_name = str(file).replace('.jack', 'T.xml')
@@ -54,10 +66,18 @@ def write_xml_file(file):
     writer.close()
 
 
+def write_xml_file(file):
+    file_name = str(file).replace('T.xml', '.xml')
+    parser = XMLParser(file)
+    JackCompiler(parser, file_name)
+
+
 def main():
     src_path = get_files_location()
-    jack_list = get_jack_list(src_path)
-    open_jack_files(jack_list, src_path)
+    # jack_list = get_jack_list(src_path)
+    # open_jack_files(jack_list, src_path)
+    tokens_list = get_tokens_list(src_path)
+    open_xml_files(tokens_list, src_path)
 
 
 if __name__ == '__main__':

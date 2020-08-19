@@ -19,7 +19,7 @@ class VMParser:
     def advance(self):
         self.position += 1
 
-    def get_command(self) -> bool:
+    def get_command(self):
         return self.commands_array[self.position].split()
 
     def arg1(self):

@@ -63,7 +63,6 @@ class JackCompiler:
         self.write('<subroutineDec>')
         self.indentation += 1
 
-        # 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
             keyword = token[1]
@@ -71,18 +70,11 @@ class JackCompiler:
                 self.compile_parameter_list()
             elif keyword == '{':
                 self.compile_subroutine_body()
-            else:
-                self.write_advance()
-
-        while self.parser.has_more_commands():
-            token = self.parser.get_token()
-            keyword = token[1]
-            if keyword == '{':
-                self.compile_subroutine_body()
+                break
             elif keyword == '}':
                 break
             else:
-                break
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</subroutineDec>')
@@ -91,6 +83,7 @@ class JackCompiler:
         self.write('<subroutineBody>')
         self.indentation += 1
         break_words = {'}'}
+
         statements_starter = {'let', 'do', 'if', 'while'}
 
         # check for class var dec
@@ -128,7 +121,7 @@ class JackCompiler:
                 self.write_advance()
 
         self.indentation -= 1
-        self.write('</paramterList>')
+        self.write('</parameterList>')
 
     # Compiles a var declaration.
     def compile_var_dec(self):
@@ -176,10 +169,16 @@ class JackCompiler:
         self.write('<doStatement>')
         self.indentation += 1
 
-        # while self.parser.has_more_commands():
-        #     keword = self.parser.get_token()[1]
-        self.write_advance()
-
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == '(':
+                self.write_advance()
+                self.compile_expression_list()
+            elif keyword == ';':
+                self.write_advance()
+                break
+            else:
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</doStatement>')
@@ -233,7 +232,13 @@ class JackCompiler:
         self.write('<returnStatement>')
         self.indentation += 1
 
-        self.parser.advance()
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == ';':
+                self.write_advance()
+                break
+            else:
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</returnStatement>')
@@ -243,7 +248,21 @@ class JackCompiler:
         self.write('<ifStatement>')
         self.indentation += 1
 
-        self.write_advance()
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == '(':
+                self.write_advance()
+                self.compile_expression()
+            elif keyword == '}':
+                self.write_advance()
+                keyword = self.parser.get_token()[1]
+                if keyword != 'else':
+                    break
+            elif keyword == '{':
+                self.write_advance()
+                self.compile_statements()
+            else:
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</ifStatement>')
@@ -278,6 +297,7 @@ class JackCompiler:
         self.indentation += 1
         token = self.parser.get_token()
         break_set = {';', ')'}
+        bracket_count = 0
 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
@@ -290,9 +310,13 @@ class JackCompiler:
             elif keyword in break_set:
                 break
             elif keyword == '[':
+                bracket_count += 1
                 self.write_advance()
                 self.compile_expression()
             elif keyword == ']':
+                if bracket_count > 0:
+                    bracket_count -= 1
+                    self.write_advance()
                 break
             # is not a . to commect terms
             elif token_type == 'symbol' and keyword != '.':

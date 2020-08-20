@@ -52,6 +52,9 @@ class JackCompiler:
             keyword = token[1]
             if keyword in break_words:
                 break
+            elif keyword == ';':
+                self.write_advance()
+                break
             else:
                 self.write_advance()
 
@@ -234,9 +237,12 @@ class JackCompiler:
 
         while self.parser.has_more_commands():
             keyword = self.parser.get_token()[1]
+            token_type = self.parser.get_token()[0]
             if keyword == ';':
                 self.write_advance()
                 break
+            elif token_type == 'identifier':
+                self.compile_expression()
             else:
                 self.write_advance()
 
@@ -272,7 +278,8 @@ class JackCompiler:
         self.write('<expression>')
         self.indentation += 1
         term_types = {'stringConstant', 'identifier', 'integerConstant'}
-        break_keywords = {')', ';', ']'}
+        term_keywords = {'this', 'that'}
+        break_keywords = {')', ';', ']', ','}
 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
@@ -280,7 +287,7 @@ class JackCompiler:
             token_type = token[0]
             if keyword in break_keywords:
                 break
-            elif token_type in term_types:
+            elif token_type in term_types or keyword in term_keywords:
                 self.compile_term()
             elif keyword == '[':
                 self.write_advance()

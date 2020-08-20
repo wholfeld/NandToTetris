@@ -9,49 +9,87 @@
     <symbol> , </symbol>
     <identifier> y </identifier>
     <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
     <keyword> field </keyword>
     <keyword> int </keyword>
     <identifier> size </identifier>
     <symbol> ; </symbol>
+  </classVarDec>
+  <subroutineDec>
     <keyword> constructor </keyword>
     <identifier> Square </identifier>
     <identifier> new </identifier>
     <symbol> ( </symbol>
-    <keyword> int </keyword>
-    <identifier> Ax </identifier>
-    <symbol> , </symbol>
-    <keyword> int </keyword>
-    <identifier> Ay </identifier>
-    <symbol> , </symbol>
-    <keyword> int </keyword>
-    <identifier> Asize </identifier>
+    <parameterList>
+      <keyword> int </keyword>
+      <identifier> Ax </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> Ay </identifier>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> Asize </identifier>
+    </parameterList>
     <symbol> ) </symbol>
-    <symbol> { </symbol>
-    <keyword> let </keyword>
-    <identifier> x </identifier>
-    <symbol> = </symbol>
-    <identifier> Ax </identifier>
-    <symbol> ; </symbol>
-    <keyword> let </keyword>
-    <identifier> y </identifier>
-    <symbol> = </symbol>
-    <identifier> Ay </identifier>
-    <symbol> ; </symbol>
-    <keyword> let </keyword>
-    <identifier> size </identifier>
-    <symbol> = </symbol>
-    <identifier> Asize </identifier>
-    <symbol> ; </symbol>
-    <keyword> do </keyword>
-    <identifier> draw </identifier>
-    <symbol> ( </symbol>
-    <symbol> ) </symbol>
-    <symbol> ; </symbol>
-    <keyword> return </keyword>
-    <identifier> x </identifier>
-    <symbol> ; </symbol>
-  </classVarDec>
-  <symbol> } </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> x </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Ax </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> y </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Ay </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> size </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> Asize </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <doStatement>
+          <keyword> do </keyword>
+          <identifier> draw </identifier>
+          <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
+          <symbol> ) </symbol>
+          <symbol> ; </symbol>
+        </doStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> x </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
   <subroutineDec>
     <keyword> method </keyword>
     <keyword> void </keyword>
@@ -71,7 +109,9 @@
           <symbol> ( </symbol>
           <expressionList>
             <expression>
-              <keyword> this </keyword>
+              <term>
+                <keyword> this </keyword>
+              </term>
             </expression>
           </expressionList>
           <symbol> ) </symbol>
@@ -123,15 +163,21 @@
               <term>
                 <identifier> x </identifier>
               </term>
-              <symbol> , </symbol>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
               <term>
                 <identifier> y </identifier>
               </term>
-              <symbol> , </symbol>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
               <term>
                 <identifier> x </identifier>
               </term>
-              <symbol> , </symbol>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
               <term>
                 <identifier> y </identifier>
               </term>
@@ -186,15 +232,21 @@
               <term>
                 <identifier> x </identifier>
               </term>
-              <symbol> , </symbol>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
               <term>
                 <identifier> y </identifier>
               </term>
-              <symbol> , </symbol>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
               <term>
                 <identifier> x </identifier>
               </term>
-              <symbol> , </symbol>
+            </expression>
+            <symbol> , </symbol>
+            <expression>
               <term>
                 <identifier> y </identifier>
               </term>
@@ -384,15 +436,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -439,15 +497,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -516,15 +580,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -571,15 +641,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -648,15 +724,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -703,15 +785,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -780,15 +868,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
@@ -835,15 +929,21 @@
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> x </identifier>
                   </term>
-                  <symbol> , </symbol>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
                   <term>
                     <identifier> y </identifier>
                   </term>

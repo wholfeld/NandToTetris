@@ -7,31 +7,59 @@
     <identifier> Square </identifier>
     <identifier> square </identifier>
     <symbol> ; </symbol>
+  </classVarDec>
+  <classVarDec>
     <keyword> field </keyword>
     <keyword> int </keyword>
     <identifier> direction </identifier>
     <symbol> ; </symbol>
+  </classVarDec>
+  <subroutineDec>
     <keyword> constructor </keyword>
     <identifier> SquareGame </identifier>
     <identifier> new </identifier>
     <symbol> ( </symbol>
+    <parameterList>
+    </parameterList>
     <symbol> ) </symbol>
-    <symbol> { </symbol>
-    <keyword> let </keyword>
-    <identifier> square </identifier>
-    <symbol> = </symbol>
-    <identifier> square </identifier>
-    <symbol> ; </symbol>
-    <keyword> let </keyword>
-    <identifier> direction </identifier>
-    <symbol> = </symbol>
-    <identifier> direction </identifier>
-    <symbol> ; </symbol>
-    <keyword> return </keyword>
-    <identifier> square </identifier>
-    <symbol> ; </symbol>
-  </classVarDec>
-  <symbol> } </symbol>
+    <subroutineBody>
+      <symbol> { </symbol>
+      <statements>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> square </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> square </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <letStatement>
+          <keyword> let </keyword>
+          <identifier> direction </identifier>
+          <symbol> = </symbol>
+          <expression>
+            <term>
+              <identifier> direction </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </letStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <expression>
+            <term>
+              <identifier> square </identifier>
+            </term>
+          </expression>
+          <symbol> ; </symbol>
+        </returnStatement>
+      </statements>
+      <symbol> } </symbol>
+    </subroutineBody>
+  </subroutineDec>
   <subroutineDec>
     <keyword> method </keyword>
     <keyword> void </keyword>

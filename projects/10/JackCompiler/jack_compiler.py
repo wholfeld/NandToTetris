@@ -79,6 +79,8 @@ class JackCompiler:
             keyword = token[1]
             if keyword == '{':
                 self.compile_subroutine_body()
+            elif keyword == '}':
+                break
             else:
                 break
 
@@ -89,15 +91,19 @@ class JackCompiler:
         self.write('<subroutineBody>')
         self.indentation += 1
         break_words = {'}'}
+        statements_starter = {'let', 'do', 'if', 'while'}
 
         # check for class var dec
         while self.parser.has_more_commands():
             token = self.parser.get_token()
             keyword = token[1]
             if keyword in break_words:
+                self.write_advance()
                 break
             elif keyword == 'var':
                 self.compile_var_dec()
+            elif keyword in statements_starter:
+                self.compile_statements()
             else:
                 self.write_advance()
 
@@ -151,6 +157,8 @@ class JackCompiler:
                 self.compile_if()
             elif keyword == 'let':
                 self.compile_let()
+            elif keyword == 'do':
+                self.compile_do()
             elif keyword == 'while':
                 self.compile_while()
             elif keyword == 'return':
@@ -168,7 +176,10 @@ class JackCompiler:
         self.write('<doStatement>')
         self.indentation += 1
 
-        self.parser.advance()
+        # while self.parser.has_more_commands():
+        #     keword = self.parser.get_token()[1]
+        self.write_advance()
+
 
         self.indentation -= 1
         self.write('</doStatement>')
@@ -178,7 +189,19 @@ class JackCompiler:
         self.write('<letStatement>')
         self.indentation += 1
 
-        self.parser.advance()
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == '=':
+                self.write_advance()
+                self.compile_expression()
+            elif keyword == ';':
+                self.write_advance()
+                break
+            elif keyword == '[':
+                self.write_advance()
+                self.compile_expression()
+            else:
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</letStatement>')
@@ -188,7 +211,19 @@ class JackCompiler:
         self.write('<whileStatement>')
         self.indentation += 1
 
-        self.parser.advance()
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == '(':
+                self.write_advance()
+                self.compile_expression()
+            elif keyword == '{':
+                self.write_advance()
+                self.compile_statements()
+            elif keyword == '}':
+                self.write_advance()
+                break
+            else:
+                self.write_advance()
 
         self.indentation -= 1
         self.write('</whileStatement>')
@@ -208,7 +243,7 @@ class JackCompiler:
         self.write('<ifStatement>')
         self.indentation += 1
 
-        self.parser.advance()
+        self.write_advance()
 
         self.indentation -= 1
         self.write('</ifStatement>')
@@ -218,7 +253,7 @@ class JackCompiler:
         self.write('<expression>')
         self.indentation += 1
         term_types = {'stringConstant', 'identifier', 'integerConstant'}
-        break_keywords = {')'}
+        break_keywords = {')', ';', ']'}
 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
@@ -228,6 +263,9 @@ class JackCompiler:
                 break
             elif token_type in term_types:
                 self.compile_term()
+            elif keyword == '[':
+                self.write_advance()
+                self.compile_expression()
             else:
                 self.write_advance()
 
@@ -246,9 +284,15 @@ class JackCompiler:
             keyword = token[1]
             token_type = token[0]
             if keyword == '(':
+                self.write_advance()
                 self.compile_expression_list()
             # finds a ; or )
             elif keyword in break_set:
+                break
+            elif keyword == '[':
+                self.write_advance()
+                self.compile_expression()
+            elif keyword == ']':
                 break
             # is not a . to commect terms
             elif token_type == 'symbol' and keyword != '.':
@@ -261,11 +305,21 @@ class JackCompiler:
 
     # Compiles a (possibly empty) comma-seperated list of expressions.
     def compile_expression_list(self):
-        self.write('<ifStatement>')
+        self.write('<expressionList>')
         self.indentation += 1
 
+        while self.parser.has_more_commands():
+            keyword = self.parser.get_token()[1]
+            if keyword == ')':
+                break
+            elif keyword == ',':
+                self.write_advance()
+            else:
+                self.compile_expression()
+
         self.indentation -= 1
-        self.write('</ifStatement>')
+        self.write('</expressionList>')
+        self.write_advance()
 
     def write_advance(self):
         line = self.parser.get_token()[2]

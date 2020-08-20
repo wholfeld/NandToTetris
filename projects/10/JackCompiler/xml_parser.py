@@ -11,7 +11,8 @@ class XMLParser():
             for l in f:
                 l_stripped = l.strip()
                 if len(l) > 0:
-                    self.tokens_array.append(l_stripped)
+                    if 'token' not in l_stripped:
+                        self.tokens_array.append(l_stripped)
 
     def has_more_commands(self) -> bool:
         return self.position < len(self.tokens_array)

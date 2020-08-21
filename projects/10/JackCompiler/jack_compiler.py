@@ -4,6 +4,7 @@ class JackCompiler:
         self.indentation = 0
         self.file = open(f'{file_name}', 'w')
         self.parser = parser
+        self.building_expression_list = False
         token = self.parser.get_token()
         while self.parser.has_more_commands():
             token = self.parser.get_token()
@@ -237,11 +238,10 @@ class JackCompiler:
 
         while self.parser.has_more_commands():
             keyword = self.parser.get_token()[1]
-            token_type = self.parser.get_token()[0]
             if keyword == ';':
                 self.write_advance()
                 break
-            elif token_type == 'identifier':
+            elif keyword != 'return':
                 self.compile_expression()
             else:
                 self.write_advance()
@@ -278,7 +278,9 @@ class JackCompiler:
         self.write('<expression>')
         self.indentation += 1
         term_types = {'stringConstant', 'identifier', 'integerConstant'}
-        term_keywords = {'this', 'that'}
+        term_keywords = {'this', 'that', 'false', 'true', 'null', '(', '-', '~', '^'}
+        has_seen_term = False
+        # term_operands = {'-', '~', '^'}
         break_keywords = {')', ';', ']', ','}
 
         while self.parser.has_more_commands():
@@ -287,8 +289,12 @@ class JackCompiler:
             token_type = token[0]
             if keyword in break_keywords:
                 break
+            elif has_seen_term and keyword == '-':
+                self.write_advance()
+                has_seen_term = False
             elif token_type in term_types or keyword in term_keywords:
                 self.compile_term()
+                has_seen_term = True
             elif keyword == '[':
                 self.write_advance()
                 self.compile_expression()
@@ -299,37 +305,110 @@ class JackCompiler:
         self.write('</expression>')
 
     # Compiles a term. This routine is faced with a slight difficulty when traing to decide between some of the alternative parsing rules.
+    # def compile_term(self):
+    #     self.write('<term>')
+    #     self.indentation += 1
+    #     token = self.parser.get_token()
+    #     break_set = {';'}
+    #     bracket_count = 0
+    #     paranthesis_count = 0
+    #     term_types = {'stringConstant', 'identifier', 'integerConstant'}
+    #     term_symbols = {'-', '~', '^'}
+    #     create_new_term = False
+
+    #     while self.parser.has_more_commands():
+    #         token = self.parser.get_token()
+    #         keyword = token[1]
+    #         token_type = token[0]
+    #         if keyword == '.':
+    #             self.building_expression_list = True
+    #         if create_new_term and keyword == '(':
+    #             create_new_term = False
+    #             self.compile_term()
+    #         elif keyword == '(':
+    #             self.write_advance()
+    #             paranthesis_count += 1
+    #             if self.building_expression_list:
+    #                 self.compile_expression_list()
+    #                 self.building_expression_list = False
+    #             else:
+    #                 self.compile_expression()
+    #         # finds a ;
+    #         elif keyword in break_set:
+    #             break
+    #         elif keyword == ')':
+    #             if paranthesis_count > 0:
+    #                 self.write_advance()
+    #                 paranthesis_count -= 1
+    #                 if paranthesis_count == 0:
+    #                     break
+    #             else:
+    #                 break
+    #         elif keyword == '[':
+    #             bracket_count += 1
+    #             self.write_advance()
+    #             self.compile_expression()
+    #         elif keyword == ']':
+    #             if bracket_count > 0:
+    #                 bracket_count -= 1
+    #                 self.write_advance()
+    #             break
+    #         elif keyword in term_symbols:
+    #             create_new_term = True
+    #             self.write_advance()
+    #         # is not a . to commect terms
+    #         elif token_type == 'symbol' and keyword != '.':
+    #             break
+    #         elif token_type in term_types:
+    #             if create_new_term:
+    #                 self.compile_term()
+    #                 create_new_term = False
+    #             else:
+    #                 self.write_advance()
+    #                 if self.parser.get_token()[1] != '.' or self.parser.get_token()[1] != '(':
+    #                     break
+    #         else:
+    #             self.write_advance()
+
+    #     self.indentation -= 1
+    #     self.write('</term>')
+
     def compile_term(self):
         self.write('<term>')
         self.indentation += 1
-        token = self.parser.get_token()
-        break_set = {';', ')'}
-        bracket_count = 0
+        writing_call = False
+        expression_set = {'(', '['}
+        unary_set = {'-', '~'}
+        continue_set = {'.', '('}
 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
-            keyword = token[1]
             token_type = token[0]
-            if keyword == '(':
+            keyword = token[1]
+            if keyword in expression_set:
                 self.write_advance()
-                self.compile_expression_list()
-            # finds a ; or )
-            elif keyword in break_set:
-                break
-            elif keyword == '[':
-                bracket_count += 1
+                if writing_call:
+                    self.compile_expression_list()
+                else:
+                    self.compile_expression()
+            elif keyword in unary_set:
                 self.write_advance()
-                self.compile_expression()
-            elif keyword == ']':
-                if bracket_count > 0:
-                    bracket_count -= 1
-                    self.write_advance()
+                self.compile_term()
                 break
-            # is not a . to commect terms
-            elif token_type == 'symbol' and keyword != '.':
-                break
+            elif keyword == '.':
+                self.write_advance()
+            elif token_type == 'identifier':
+                self.write_advance()
+                keyword = self.parser.get_token()[1]
+                if keyword in continue_set:
+                    writing_call = True
+                elif keyword == '[':
+                    continue
+                else:
+                    break
             else:
                 self.write_advance()
+                break
 
         self.indentation -= 1
         self.write('</term>')
@@ -350,7 +429,6 @@ class JackCompiler:
 
         self.indentation -= 1
         self.write('</expressionList>')
-        self.write_advance()
 
     def write_advance(self):
         line = self.parser.get_token()[2]

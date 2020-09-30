@@ -7,11 +7,18 @@
 
 // Inputs some numbers and computes their average
 class Main {
+   field int m_int1, m_int2;
+   field String t;
+   static boolean fun;
+
    function void main() {
      var Array a; 
      var int length;
      var int i, sum;
+     // var String s;
 
+     // let m_int1 = 1;
+     // let s = "hello world";
      let length = Keyboard.readInt("How many numbers? ");
      let a = Array.new(length); // constructs the array
      

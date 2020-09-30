@@ -1,3 +1,6 @@
+from symbol_builder import SymbolBuilder
+
+
 class JackCompiler:
 
     def __init__(self, parser, file_name):
@@ -5,6 +8,7 @@ class JackCompiler:
         self.file = open(f'{file_name}', 'w')
         self.parser = parser
         self.building_expression_list = False
+        self.symbol_builder = SymbolBuilder()
         token = self.parser.get_token()
         while self.parser.has_more_commands():
             token = self.parser.get_token()
@@ -429,12 +433,15 @@ class JackCompiler:
         self.write('</expressionList>')
 
     def write_advance(self):
-        line = self.parser.get_token()[2]
+        # line = self.parser.get_token()[2]
+        s_type = self.parser.get_token()[0]
+        s_name = self.parser.get_token()[1]
+        line = self.symbol_builder.get_xml(s_type, s_name)
         self.write(line)
         self.parser.advance()
 
     def write(self, str_to_write):
-        #self.file.write('\t' * self.indentation + str_to_write + '\n')
+        # self.file.write('\t' * self.indentation + str_to_write + '\n')
         # str_to_wrtie = '\t' * self.indentation + str_to_write + '\n'
         # print(str_to_write)
         self.file.write('  ' * self.indentation + str_to_write + '\n')

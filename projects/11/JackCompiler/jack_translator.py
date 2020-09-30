@@ -2,13 +2,13 @@ import sys
 from pathlib import Path
 from jack_parser import JackParser
 from jack_tokenizer import JackTokenizer
-from jack_compiler import JackCompiler
+from jack_compiler_vm import JackCompiler
 from xml_parser import XMLParser
 
 
 def get_files_location() -> str:
     # Open files in folder.
-    folder_location = format_folder('SquareWarrick')
+    folder_location = format_folder('WarricksProgram')
     if len(sys.argv) > 1:
         folder_location = format_folder(sys.argv[1])
 
@@ -26,29 +26,29 @@ def get_jack_list(src_path) -> list:
     return jack_list
 
 
-def get_tokens_list(src_path) -> list:
+def get_xml_tokens_files(src_path) -> list:
     xml_list = list(src_path.glob('*T.xml'))
     return xml_list
 
 
-def open_jack_files(jack_list, src_path):
-    # xml_name = src_path.name + '.xml'
-    # file_name = (src_path / xml_name).resolve()
-    # writer = JackParser(file_name)
+# def open_jack_files(jack_list, src_path):
+#     # xml_name = src_path.name + '.xml'
+#     # file_name = (src_path / xml_name).resolve()
+#     # writer = JackParser(file_name)
 
-    # For each file pass to parser.
-    # sorted_jack_list = []
-    # for i in range(len(jack_list)):
-    #     if 'Main.jack' in jack_list[i].name:
-    #         sorted_jack_list.append(jack_list[i])
+#     # For each file pass to parser.
+#     # sorted_jack_list = []
+#     # for i in range(len(jack_list)):
+#     #     if 'Main.jack' in jack_list[i].name:
+#     #         sorted_jack_list.append(jack_list[i])
 
-    for file in jack_list:
-        write_token_xml_file(file)
+#     for file in jack_list:
+#         write_token_xml_file(file)
 
 
-def open_xml_files(xml_tokens_list, stc_path):
-    for file in xml_tokens_list:
-        write_xml_file(file)
+# def open_xml_files(xml_tokens_list, stc_path):
+#     for file in xml_tokens_list:
+#         write_indented_xml_file(file)
 
 
 def write_token_xml_file(file):
@@ -66,7 +66,7 @@ def write_token_xml_file(file):
     writer.close()
 
 
-def write_xml_file(file):
+def write_indented_xml_file(file):
     file_name = str(file).replace('T.xml', '.xml')
     parser = XMLParser(file)
     JackCompiler(parser, file_name)
@@ -74,10 +74,15 @@ def write_xml_file(file):
 
 def main():
     src_path = get_files_location()
-    # jack_list = get_jack_list(src_path)
-    # open_jack_files(jack_list, src_path)
-    tokens_list = get_tokens_list(src_path)
-    open_xml_files(tokens_list, src_path)
+
+    jack_list = get_jack_list(src_path)
+    for file in jack_list:
+        write_token_xml_file(file)
+
+    tokens_list = get_xml_tokens_files(src_path)
+
+    for file in tokens_list:
+        write_indented_xml_file(file)
 
 
 if __name__ == '__main__':

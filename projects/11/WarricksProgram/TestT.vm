@@ -1,0 +1,15 @@
+// writing construction Test
+function Test.xml.Test
+push constant 2
+call Memory alloc 1
+pop pointer 0
+// writing method void
+function Test.xml.void
+push argument 0
+pop pointer 0
+// writing method void
+function Test.xml.void
+push argument 0
+pop pointer 0
+// writing method void
+function Test.xml.void

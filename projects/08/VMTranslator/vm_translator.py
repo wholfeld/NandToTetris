@@ -12,6 +12,7 @@ def format_folder(folder_name: str) -> str:
 def get_files_location() -> str:
     # Open files in folder.
     folder_location = format_folder('FunctionCalls/NestedCall')
+    print(sys.argv)
     if len(sys.argv) > 1:
         folder_location = format_folder(sys.argv[1])
 
@@ -41,7 +42,7 @@ def open_vm_files(vm_list, src_path):
 
     for file in sorted_vm_list:
         write_asm_file(writer, file)
-    
+
     writer.close()
 
 

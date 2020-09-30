@@ -10,9 +10,11 @@ class Square {
 
    field int x, y; // screen location of the square's top-left corner
    field int size; // length of this square, in pixels
+   field String t;
 
    /** Constructs a new square with a given location and size. */
    constructor Square new(int Ax, int Ay, int Asize) {
+      let t = "fun";
       let x = Ax;
       let y = Ay;
       let size = Asize;

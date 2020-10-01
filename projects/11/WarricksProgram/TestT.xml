@@ -54,6 +54,8 @@
 <keyword> void </keyword>
 <identifier> addToStatic </identifier>
 <symbol> ( </symbol>
+<keyword> int </keyword>
+<identifier> x </identifier>
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <keyword> let </keyword>

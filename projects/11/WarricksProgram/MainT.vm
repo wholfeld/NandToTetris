@@ -1,2 +1,3 @@
-// writing method void
-function Main.xml.void
+
+// writing method main
+function Main.main 0

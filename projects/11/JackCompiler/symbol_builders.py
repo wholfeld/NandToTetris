@@ -31,6 +31,21 @@ class SymbolBuilder():
     def get_function_table(self):
         return self.function_table
 
+    def get_field_count(self):
+        if self.class_table.kind_dictionary:
+
+            field_count = self.class_table.kind_dictionary['field']
+            return field_count + 1
+        else:
+            return 0
+
+    def get_locals_count(self):
+        if self.function_table.kind_dictionary and 'var' in self.function_table.kind_dictionary.keys():
+            local_count = self.function_table.kind_dictionary['var']
+            return local_count + 1
+        else:
+            return 0
+
     def get_xml(self, symbol_type: str, symbol_name: str):
         b_type = self.identifier_kind
         if symbol_name in self.kind_types:

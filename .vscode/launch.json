@@ -6,14 +6,14 @@
     "configurations": [
         
         {
-            "name": "Python: Current File",
+            "name": "Python: translater",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/projects/11/JackCompiler/jack_translator.py",
             // "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "Square",
+                "WarricksProgram",
                 "cool",
             ]
         },

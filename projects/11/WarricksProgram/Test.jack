@@ -14,7 +14,7 @@ class Test {
         return;
     }
 
-    method void addToStatic() {
+    method void addToStatic(int x) {
         let y = y + 1;
         return;
     }

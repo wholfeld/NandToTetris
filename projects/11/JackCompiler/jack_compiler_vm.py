@@ -11,6 +11,7 @@ class JackCompiler:
         self.parser = parser
         self.building_expression_list = False
         self.symbol_builder = SymbolBuilder()
+        self.function_tokens = []
         token = self.parser.get_token()
         vm_file_name = str(file_name).replace('.xml', 'T.vm')
         vm_class_name = str(str(file_name).split('/')[-1])
@@ -75,22 +76,24 @@ class JackCompiler:
     def compile_subroutine(self):
         self.write('<subroutineDec>')
         self.indentation += 1
+        word_counter = 0
         function_type = None
         function_name = None
 
         while self.parser.has_more_commands():
             token = self.parser.get_token()
             keyword = token[1]
-            if function_type is None:
+            if word_counter == 0:
                 function_type = keyword
-            elif function_name is None:
+            if word_counter == 2:
                 function_name = keyword
-                self.vm_writer.write_function(function_type, function_name, 2)
+                # self.vm_writer.write_function(function_type, function_name, 2)
+            word_counter += 1
 
             if keyword == '(':
                 self.compile_parameter_list()
             elif keyword == '{':
-                self.compile_subroutine_body()
+                self.compile_subroutine_body(function_type, function_name)
                 break
             elif keyword == '}':
                 break
@@ -100,10 +103,11 @@ class JackCompiler:
         self.indentation -= 1
         self.write('</subroutineDec>')
 
-    def compile_subroutine_body(self):
+    def compile_subroutine_body(self, function_type, function_name):
         self.write('<subroutineBody>')
         self.indentation += 1
         break_words = {'}'}
+        self.function_tokens = []
 
         statements_starter = {'let', 'do', 'if', 'while'}
 
@@ -123,6 +127,7 @@ class JackCompiler:
 
         self.indentation -= 1
         self.write('</subroutineBody>')
+        self.vm_writer.write_function(self.symbol_builder, self.function_tokens, function_type, function_name, 2)
 
     # Compiles a (possibly empty) parameter list, not including the enclosing "()".
     def compile_parameter_list(self):
@@ -378,8 +383,10 @@ class JackCompiler:
 
     def write_advance(self):
         # line = self.parser.get_token()[2]
-        s_type = self.parser.get_token()[0]
-        s_name = self.parser.get_token()[1]
+        token = self.parser.get_token()
+        self.function_tokens.append(token)
+        s_type = token[0]
+        s_name = token[1]
         line = self.symbol_builder.get_xml(s_type, s_name)
         self.write(line)
         self.parser.advance()

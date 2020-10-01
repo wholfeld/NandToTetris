@@ -2,7 +2,7 @@ class VMWriter:
 
     def __init__(self, file_name, class_name):
         self.file = open(f'{file_name}', 'w')
-        self.class_name = class_name
+        self.class_name = class_name.split('.')[0]
         self.if_count = 0
         self.show_comment = True
 
@@ -28,23 +28,25 @@ class VMWriter:
     def write_call(self, name: str, n_args: int):
         self.file.write(f'call {name} {n_args}')
 
-    def write_function(self, function_type: str, function_name: str, n_locals: int):
+    def write_function(self, symbol_builder, function_tokens, function_type: str, function_name: str, n_locals: int):
+        local_count = symbol_builder.get_locals_count()
         if function_type == 'constructor':
-            self.write_comments(f'// writing construction {function_name}')
-            self.file.write(f'''function {self.class_name}.{function_name}\n''')
-            self.file.write(f'''push constant {n_locals}
+            class_fields_count = symbol_builder.get_field_count()
+            self.write_comments(f'\n// writing construction {function_name}')
+            self.file.write(f'''function {self.class_name}.{function_name} {local_count}\n''')
+            self.file.write(f'''push constant {class_fields_count}
 call Memory alloc 1
 pop pointer 0
 ''')
         elif function_type == 'method':
-            self.write_comments(f'// writing method {function_name}')
-            self.file.write(f'''function {self.class_name}.{function_name}\n''')
+            self.write_comments(f'\n// writing method {function_name}')
+            self.file.write(f'''function {self.class_name}.{function_name} {local_count}\n''')
             self.file.write(f'''push argument 0
 pop pointer 0
 ''')
         else:
-            self.write_comments(f'// writing method {function_name}')
-            self.file.write(f'''function {self.class_name}.{function_name}\n''')
+            self.write_comments(f'\n// writing method {function_name}')
+            self.file.write(f'''function {self.class_name}.{function_name} {local_count}\n''')
 
     def write_return(self):
         self.write_comments(f'// writing return')

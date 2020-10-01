@@ -12,6 +12,10 @@
 <keyword> int </keyword>
 <identifier> size </identifier>
 <symbol> ; </symbol>
+<keyword> field </keyword>
+<identifier> String </identifier>
+<identifier> t </identifier>
+<symbol> ; </symbol>
 <keyword> constructor </keyword>
 <identifier> Square </identifier>
 <identifier> new </identifier>
@@ -26,6 +30,11 @@
 <identifier> Asize </identifier>
 <symbol> ) </symbol>
 <symbol> { </symbol>
+<keyword> let </keyword>
+<identifier> t </identifier>
+<symbol> = </symbol>
+<stringConstant> fun </stringConstant>
+<symbol> ; </symbol>
 <keyword> let </keyword>
 <identifier> x </identifier>
 <symbol> = </symbol>

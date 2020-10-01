@@ -1,15 +1,19 @@
-// writing construction Test
-function Test.xml.Test
-push constant 2
+
+// writing construction new
+function Test.new 0
+push constant 3
 call Memory alloc 1
 pop pointer 0
-// writing method void
-function Test.xml.void
+
+// writing method dispose
+function Test.dispose 0
 push argument 0
 pop pointer 0
-// writing method void
-function Test.xml.void
+
+// writing method addToStatic
+function Test.addToStatic 0
 push argument 0
 pop pointer 0
-// writing method void
-function Test.xml.void
+
+// writing method smallFunc
+function Test.smallFunc 1

@@ -102,6 +102,8 @@
     <identifier> addToStatic </identifier>
     <symbol> ( </symbol>
     <parameterList>
+      <keyword> int </keyword>
+      <identifier> x </identifier x, int, argument, 1>
     </parameterList>
     <symbol> ) </symbol>
     <subroutineBody>

@@ -67,6 +67,16 @@ keyword_set = frozenset([
     'return'
 ])
 
+arithmetic_set = frozenset([
+    '+',
+    '-',
+    '*',
+    '/',
+    '&',
+    '|',
+    '<',
+    '>',
+])
 
 symbol_set = frozenset([
     '{',

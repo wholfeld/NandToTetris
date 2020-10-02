@@ -9,19 +9,19 @@ class Test {
         return this;
     }
 
-    method void dispose() {
-        do Memory.deAlloc(this);
-        return;
-    }
+    // method void dispose() {
+    //     do Memory.deAlloc(this);
+    //     return;
+    // }
 
-    method void addToStatic(int x) {
-        let y = y + 1;
-        return;
-    }
+    // method void addToStatic(int x) {
+    //     let y = y + 1;
+    //     return;
+    // }
 
-    function void smallFunc() {
-        var int x;
-        let x = 8;
-        return;
-    }
+    // function void smallFunc() {
+    //     var int x;
+    //     let x = 8;
+    //     return;
+    // }
 }

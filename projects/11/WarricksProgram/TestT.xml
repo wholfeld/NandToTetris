@@ -18,20 +18,5 @@
 <keyword> int </keyword>
 <identifier> y </identifier>
 <symbol> ; </symbol>
-<keyword> constructor </keyword>
-<identifier> Test </identifier>
-<identifier> new </identifier>
-<symbol> ( </symbol>
-<symbol> ) </symbol>
-<symbol> { </symbol>
-<keyword> let </keyword>
-<identifier> x </identifier>
-<symbol> = </symbol>
-<integerConstant> 2 </integerConstant>
-<symbol> ; </symbol>
-<keyword> return </keyword>
-<keyword> this </keyword>
-<symbol> ; </symbol>
-<symbol> } </symbol>
 <symbol> } </symbol>
 </tokens>

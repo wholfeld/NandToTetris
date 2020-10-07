@@ -4,10 +4,10 @@ class Test {
     field int interesting;
     static int y;
 
-    constructor Test new() { 
-        let x = 2;
-        return this;
-    }
+    // constructor Test new() { 
+    //     let x = 2;
+    //     return this;
+    // }
 
     // method void dispose() {
     //     do Memory.deAlloc(this);

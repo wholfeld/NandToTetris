@@ -42,6 +42,19 @@ types_dict = {
     TokenTypes.STRING_CONST: 'stringConstant'
 }
 
+arithmetic_dictionary = {
+    '+': 'add',
+    # '-':'sub',
+    '*': 'call Math.multiply 2',
+    '/': 'call Math.divide 2',
+    'JEQ': 'eq',
+    'JGT': 'gt',
+    'JLT': 'lt',
+    '&': 'and',
+    '|': 'or',
+    '!': 'not',
+    '-': 'neg',
+}
 
 keyword_set = frozenset([
     'class',

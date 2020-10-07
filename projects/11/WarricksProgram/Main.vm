@@ -1,6 +1,5 @@
 function Main.main 0
 push constant 2
-neg
 push constant 1
 sub
 call Output.printInt 1

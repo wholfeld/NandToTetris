@@ -25,6 +25,9 @@ class SymbolBuilder():
             'function'
         ])
 
+    def is_var(self, token):
+        return len(self._get_identifier(token)) > 0
+
     def get_class_table(self):
         return self.class_table
 

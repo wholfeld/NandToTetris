@@ -17,25 +17,21 @@
           <keyword> do </keyword>
           <identifier> Output </identifier>
           <symbol> . </symbol>
-          <identifier> printString </identifier>
+          <identifier> printInt </identifier>
           <symbol> ( </symbol>
           <expressionList>
             <expression>
               <term>
-                <stringConstant> Hello world! </stringConstant>
+                <symbol> - </symbol>
+                <term>
+                  <integerConstant> 2 </integerConstant>
+                </term>
+              </term>
+              <symbol> - </symbol>
+              <term>
+                <integerConstant> 1 </integerConstant>
               </term>
             </expression>
-          </expressionList>
-          <symbol> ) </symbol>
-          <symbol> ; </symbol>
-        </doStatement>
-        <doStatement>
-          <keyword> do </keyword>
-          <identifier> Output </identifier>
-          <symbol> . </symbol>
-          <identifier> println </identifier>
-          <symbol> ( </symbol>
-          <expressionList>
           </expressionList>
           <symbol> ) </symbol>
           <symbol> ; </symbol>

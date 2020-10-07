@@ -11,16 +11,12 @@
 <keyword> do </keyword>
 <identifier> Output </identifier>
 <symbol> . </symbol>
-<identifier> printString </identifier>
+<identifier> printInt </identifier>
 <symbol> ( </symbol>
-<stringConstant> Hello world! </stringConstant>
-<symbol> ) </symbol>
-<symbol> ; </symbol>
-<keyword> do </keyword>
-<identifier> Output </identifier>
-<symbol> . </symbol>
-<identifier> println </identifier>
-<symbol> ( </symbol>
+<symbol> - </symbol>
+<integerConstant> 2 </integerConstant>
+<symbol> - </symbol>
+<integerConstant> 1 </integerConstant>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 <keyword> return </keyword>

@@ -32,9 +32,9 @@ class VMWriter:
         self.tokens_index += 1
         token = self._get_current_token()
         if token == '(':
-            # TODO
-            pass
-        self._push_var_name(token)
+            self._process_parameters()
+        if token != '(':
+            self._push_var_name(token)
         self.file.write(f'{arithmetic_symbol}\n')
 
     def write_label(self, label):
@@ -127,6 +127,8 @@ pop pointer 0
                 break
             elif token == '(':
                 closing_count += 1
+                self.tokens_index += 1
+                self._process_parameters()
             elif token == ',':
                 parameter_count += 1
                 previous_value = False

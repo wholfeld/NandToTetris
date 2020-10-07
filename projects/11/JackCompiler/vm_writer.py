@@ -13,16 +13,19 @@ class VMWriter:
         self. symbol_builder = None
 
     def write_push(self, segment: str, index: int):
-        new_seg = segment
         if segment == 'field':
-            new_seg = 'this'
-        if segment == 'this':
-            new_seg = 'pointer'
-        self.file.write(f'push {new_seg} {str(index)}\n')
+            segment = 'this'
+        elif segment == 'this':
+            segment = 'pointer'
+        elif segment == 'var':
+            segment = 'local'
+        self.file.write(f'push {segment} {str(index)}\n')
 
     def write_pop(self, segment: str, index: int):
         if segment == 'field':
             segment = 'this'
+        elif segment == 'var':
+            segment = 'local'
         self.file.write(f'pop {segment} {str(index)}\n')
 
     def write_arithmetic(self, command, previous_value=False):
@@ -43,7 +46,8 @@ class VMWriter:
     def write_goto(self, label):
         self.file.write(f'goto {label}')
 
-    def write_if(self, label):
+    def write_if(self):
+
         self.file.write(f'''if-goto ''')
         self.if_count += 1
 
@@ -52,7 +56,7 @@ class VMWriter:
 
     def write_function(self, symbol_builder, function_tokens, function_type: str, function_name: str, n_locals: int):
         self.function_tokens = function_tokens
-        self. symbol_builder = symbol_builder
+        self.symbol_builder = symbol_builder
         self.tokens_index = 0
         local_count = symbol_builder.get_locals_count()
         if function_type == 'constructor':
@@ -141,13 +145,15 @@ pop pointer 0
 
     def _process_expression(self, previous_value=False):
         token = self._get_current_token()
+        if token == 'return':
+            print('token')
         while token != ';':
             if token.isnumeric():
                 self.file.write(f'push constant {token}\n')
                 break
             elif self.symbol_builder.is_var(token):
                 print(token)
-                self.tokens_index += 1
+                # self.tokens_index += 1
                 next_token = self.function_tokens[self.tokens_index + 1][1]
                 if next_token == '.' or next_token == '(':
                     self._call_function()
@@ -155,7 +161,7 @@ pop pointer 0
                     # var_id = self._get_id_array(token)
                     # self.write_push(var_id[2], var_id[3])
                 # local method push this
-                elif next_token == ',':
+                elif next_token == ',' or next_token == ')':
                     var_id = self._get_id_array(token)
                     self.write_push(var_id[2], var_id[3])
                     break
@@ -165,7 +171,6 @@ pop pointer 0
                     array_index_token = self.function_tokens[self.tokens_index + 2][1]
                     self.tokens_index += 3
             elif token == '(':
-                # TODO
                 break
             elif token == ')':
                 break

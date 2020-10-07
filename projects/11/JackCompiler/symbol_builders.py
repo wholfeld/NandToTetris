@@ -84,7 +84,7 @@ class SymbolBuilder():
 
     def _building_function(self, symbol_name: str):
         if symbol_name == 'int':
-            print('stop')
+            pass
         # if arguments are finished
         if symbol_name == ')':
             self.identifier_kind = None

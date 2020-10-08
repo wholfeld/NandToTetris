@@ -50,9 +50,9 @@ arithmetic_dictionary = {
     '=': 'eq',
     '&gt;': 'gt',
     '&lt;': 'lt',
-    '&': 'and',
+    '&amp;': 'and',
     '|': 'or',
-    '!': 'not',
+    '~': 'not',
     '-': 'neg',
 }
 
@@ -83,13 +83,14 @@ keyword_set = frozenset([
 arithmetic_set = frozenset([
     '+',
     '-',
+    '~',
     '*',
     '/',
-    '&',
+    '&amp;',
     '|',
     '&lt;',
     '&gt;',
-    '='
+    '=',
 ])
 
 symbol_set = frozenset([

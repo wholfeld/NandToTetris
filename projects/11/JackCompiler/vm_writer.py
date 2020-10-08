@@ -49,35 +49,37 @@ class VMWriter:
 
     def write_if(self):
         self.tokens_index += 1
+        current_if = self.if_count
+        self.if_count += 1
         self._process_parameters()
-        self.file.write(f'if-goto IF_TRUE{self.if_count}\n')
-        self.file.write(f'goto IF_FALSE{self.if_count}\n')
-        self.file.write(f'label IF_TRUE{self.if_count}\n')
+        self.file.write(f'if-goto IF_TRUE{current_if}\n')
+        self.file.write(f'goto IF_FALSE{current_if}\n')
+        self.file.write(f'label IF_TRUE{current_if}\n')
         self._process_function_tokens()
         self.tokens_index += 1
         token = self._get_current_token()
         if token == 'else':
-            self.file.write(f'goto IF_END{self.if_count}\n')
-            self.file.write(f'label IF_FALSE{self.if_count}\n')
+            self.file.write(f'goto IF_END{current_if}\n')
+            self.file.write(f'label IF_FALSE{current_if}\n')
             self._process_function_tokens()
-            self.file.write(f'label IF_END{self.if_count}\n')
+            self.file.write(f'label IF_END{current_if}\n')
         else:
-            self.file.write(f'label IF_FALSE{self.if_count}\n')
+            self.file.write(f'label IF_FALSE{current_if}\n')
             self._process_function_tokens()
         self.tokens_index += 1
-        self.if_count += 1
 
     def write_while(self):
         self.tokens_index += 1
-        self.file.write(f'label WHILE_EXP{self.while_count}\n')
+        current_while = self.while_count
+        self.while_count += 1
+        self.file.write(f'label WHILE_EXP{current_while}\n')
         self._process_parameters()
         self.file.write(f'not\n')
-        self.file.write(f'if-goto WHILE_END{self.while_count}\n')
+        self.file.write(f'if-goto WHILE_END{current_while}\n')
         self._process_function_tokens()
-        self.file.write(f'goto WHILE_EXP{self.while_count}\n')
-        self.file.write(f'label WHILE_END{self.while_count}\n')
+        self.file.write(f'goto WHILE_EXP{current_while}\n')
+        self.file.write(f'label WHILE_END{current_while}\n')
         self.tokens_index += 1
-        self.while_count += 1
 
     def write_call(self, name: str, n_args: int):
         self.file.write(f'call {name} {n_args}\n')
@@ -105,6 +107,8 @@ pop pointer 0
             self.write_comments(f'\n// writing method {function_name}')
             self.file.write(f'''function {self.class_name}.{function_name} {local_count}\n''')
 
+        self.while_count = 0
+        self.if_count = 0
         self._process_function_tokens()
 
     def _process_function_tokens(self):
@@ -161,7 +165,6 @@ pop pointer 0
                 continue
             elif token == '(':
                 closing_count += 1
-                self.tokens_index += 1
                 self._process_parameters()
             elif token == ',':
                 parameter_count += 1
@@ -176,8 +179,6 @@ pop pointer 0
         token = self._get_current_token()
         previous_value = False
         while token != ';':
-            if token == 'startAddress':
-                print('hi')
             if token.isnumeric():
                 self.file.write(f'push constant {token}\n')
             elif self.symbol_builder.is_var(token):

@@ -47,9 +47,9 @@ arithmetic_dictionary = {
     # '-':'sub',
     '*': 'call Math.multiply 2',
     '/': 'call Math.divide 2',
-    'JEQ': 'eq',
-    'JGT': 'gt',
-    'JLT': 'lt',
+    '=': 'eq',
+    '&gt;': 'gt',
+    '&lt;': 'lt',
     '&': 'and',
     '|': 'or',
     '!': 'not',
@@ -87,8 +87,9 @@ arithmetic_set = frozenset([
     '/',
     '&',
     '|',
-    '<',
-    '>',
+    '&lt;',
+    '&gt;',
+    '='
 ])
 
 symbol_set = frozenset([

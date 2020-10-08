@@ -7,6 +7,7 @@ class VMWriter:
         self.file = open(f'{file_name}', 'w')
         self.class_name = class_name.split('.')[0]
         self.if_count = 0
+        self.while_count = 0
         self.show_comment = False
         self.tokens_index = 0
         self.function_tokens = []
@@ -47,9 +48,36 @@ class VMWriter:
         self.file.write(f'goto {label}')
 
     def write_if(self):
-
-        self.file.write(f'''if-goto ''')
+        self.tokens_index += 1
+        self._process_parameters()
+        self.file.write(f'if-goto IF_TRUE{self.if_count}\n')
+        self.file.write(f'goto IF_FALSE{self.if_count}\n')
+        self.file.write(f'label IF_TRUE{self.if_count}\n')
+        self._process_function_tokens()
+        self.tokens_index += 1
+        token = self._get_current_token()
+        if token == 'else':
+            self.file.write(f'goto IF_END{self.if_count}\n')
+            self.file.write(f'label IF_FALSE{self.if_count}\n')
+            self._process_function_tokens()
+            self.file.write(f'label IF_END{self.if_count}\n')
+        else:
+            self.file.write(f'label IF_FALSE{self.if_count}\n')
+            self._process_function_tokens()
+        self.tokens_index += 1
         self.if_count += 1
+
+    def write_while(self):
+        self.tokens_index += 1
+        self.file.write(f'label WHILE_EXP{self.while_count}\n')
+        self._process_parameters()
+        self.file.write(f'not\n')
+        self.file.write(f'if-goto WHILE_END{self.while_count}\n')
+        self._process_function_tokens()
+        self.file.write(f'goto WHILE_EXP{self.while_count}\n')
+        self.file.write(f'label WHILE_END{self.while_count}\n')
+        self.tokens_index += 1
+        self.while_count += 1
 
     def write_call(self, name: str, n_args: int):
         self.file.write(f'call {name} {n_args}\n')
@@ -96,14 +124,16 @@ pop pointer 0
                 self._write_let()
             elif token == 'return':
                 self.write_return()
-                break
             elif token == 'if':
                 self.write_if()
-            # else must be do
+            elif token == 'while':
+                self.write_while()
             elif token == 'do':
                 self.tokens_index += 1
                 self._process_expression()
                 self.file.write(f'pop temp 0\n')
+            elif token == '}':
+                break
             else:
                 self.tokens_index += 1
 
@@ -124,66 +154,64 @@ pop pointer 0
             return 0
         closing_count = 1
         parameter_count = 1
-        previous_value = False
         while closing_count > 0:
+            token = self._get_current_token()
             if token == ')':
                 closing_count -= 1
-                break
+                continue
             elif token == '(':
                 closing_count += 1
                 self.tokens_index += 1
                 self._process_parameters()
             elif token == ',':
                 parameter_count += 1
-                previous_value = False
             else:
-                self._process_expression(previous_value)
-                previous_value = True
+                self._process_expression()
+                token = self._get_current_token()
+                continue
             self.tokens_index += 1
-            token = self._get_current_token()
         return parameter_count
 
-    def _process_expression(self, previous_value=False):
+    def _process_expression(self):
         token = self._get_current_token()
-        if token == 'return':
-            print('token')
+        previous_value = False
         while token != ';':
+            if token == 'startAddress':
+                print('hi')
             if token.isnumeric():
                 self.file.write(f'push constant {token}\n')
-                break
             elif self.symbol_builder.is_var(token):
                 print(token)
                 # self.tokens_index += 1
                 next_token = self.function_tokens[self.tokens_index + 1][1]
+                var_id = self._get_id_array(token)
                 if next_token == '.' or next_token == '(':
                     self._call_function()
                     break
-                    # var_id = self._get_id_array(token)
-                    # self.write_push(var_id[2], var_id[3])
-                # local method push this
-                elif next_token == ',' or next_token == ')':
-                    var_id = self._get_id_array(token)
-                    self.write_push(var_id[2], var_id[3])
-                    break
+                # elif next_token == ',' or next_token == ')':
+                #     self.write_push(var_id[2], var_id[3])
                 # Is a var array
                 elif next_token == '[':
                     # TODO
                     array_index_token = self.function_tokens[self.tokens_index + 2][1]
                     self.tokens_index += 3
+                else:
+                    self.write_push(var_id[2], var_id[3])
+            elif token in ['false', 'true', 'null']:
+                self.file.write(f'push constant 0\n')
+                if token == 'true':
+                    self.file.write(f'not\n')
             elif token == '(':
-                break
-            elif token == ')':
+                self._process_parameters()
+            elif token == ')' or token == ',':
                 break
             elif token in arithmetic_set:
                 self.write_arithmetic(token, previous_value)
-                break
-            elif token == 'true' or token == 'false':
-                # TODO
-                pass
             else:
                 self._call_function()
                 break
             self.tokens_index += 1
+            previous_value = True
             token = self._get_current_token()
 
     def _get_current_token(self):

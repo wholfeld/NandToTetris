@@ -4,25 +4,31 @@
   <symbol> { </symbol>
   <subroutineDec>
     <keyword> function </keyword>
-    <keyword> int </keyword>
-    <identifier> nextMask </identifier>
+    <keyword> void </keyword>
+    <identifier> fillMemory </identifier>
     <symbol> ( </symbol>
     <parameterList>
       <keyword> int </keyword>
-      <identifier> mask </identifier mask, int, argument, 0>
+      <identifier> startAddress </identifier startAddress, int, argument, 0>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> length </identifier length, int, argument, 1>
+      <symbol> , </symbol>
+      <keyword> int </keyword>
+      <identifier> value </identifier value, int, argument, 2>
     </parameterList>
     <symbol> ) </symbol>
     <subroutineBody>
       <symbol> { </symbol>
       <statements>
-        <ifStatement>
-          <keyword> if </keyword>
+        <whileStatement>
+          <keyword> while </keyword>
           <symbol> ( </symbol>
           <expression>
             <term>
-              <identifier> mask </identifier mask, int, argument, 0>
+              <identifier> length </identifier length, int, argument, 1>
             </term>
-            <symbol> = </symbol>
+            <symbol> &gt; </symbol>
             <term>
               <integerConstant> 0 </integerConstant>
             </term>
@@ -30,36 +36,68 @@
           <symbol> ) </symbol>
           <symbol> { </symbol>
           <statements>
-            <returnStatement>
-              <keyword> return </keyword>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> Memory </identifier>
+              <symbol> . </symbol>
+              <identifier> poke </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+                <expression>
+                  <term>
+                    <identifier> startAddress </identifier startAddress, int, argument, 0>
+                  </term>
+                </expression>
+                <symbol> , </symbol>
+                <expression>
+                  <term>
+                    <identifier> value </identifier value, int, argument, 2>
+                  </term>
+                </expression>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> length </identifier length, int, argument, 1>
+              <symbol> = </symbol>
               <expression>
+                <term>
+                  <identifier> length </identifier length, int, argument, 1>
+                </term>
+                <symbol> - </symbol>
                 <term>
                   <integerConstant> 1 </integerConstant>
                 </term>
               </expression>
               <symbol> ; </symbol>
-            </returnStatement>
-          </statements>
-          <symbol> } </symbol>
-          <keyword> else </keyword>
-          <symbol> { </symbol>
-          <statements>
-            <returnStatement>
-              <keyword> return </keyword>
+            </letStatement>
+            <letStatement>
+              <keyword> let </keyword>
+              <identifier> startAddress </identifier startAddress, int, argument, 0>
+              <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> mask </identifier mask, int, argument, 0>
+                  <identifier> startAddress </identifier startAddress, int, argument, 0>
                 </term>
-                <symbol> * </symbol>
+                <symbol> + </symbol>
                 <term>
-                  <integerConstant> 2 </integerConstant>
+                  <integerConstant> 1 </integerConstant>
                 </term>
               </expression>
               <symbol> ; </symbol>
-            </returnStatement>
+            </letStatement>
           </statements>
           <symbol> } </symbol>
-        </ifStatement>
+        </whileStatement>
+        <returnStatement>
+          <keyword> return </keyword>
+          <symbol> ; </symbol>
+        </returnStatement>
       </statements>
       <symbol> } </symbol>
     </subroutineBody>
+  </subroutineDec>
+  <symbol> } </symbol>
+</class>

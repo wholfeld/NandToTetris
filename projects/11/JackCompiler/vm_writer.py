@@ -35,9 +35,12 @@ class VMWriter:
             arithmetic_symbol = 'sub'
         self.tokens_index += 1
         token = self._get_current_token()
+        next_token = self.function_tokens[self.tokens_index + 1][1]
         if token == '(':
             self._process_parameters()
-        if token != '(':
+        elif next_token == '[':
+            self._push_array()
+        else:
             self._push_var_name(token)
         self.file.write(f'{arithmetic_symbol}\n')
 
@@ -224,9 +227,9 @@ pop pointer 0
                 #     self.write_push(var_id[2], var_id[3])
                 # Is a var array
                 elif next_token == '[':
-                    # TODO
-                    array_index_token = self.function_tokens[self.tokens_index + 2][1]
-                    self.tokens_index += 3
+                    self._push_array()
+                    # array_index_token = self.function_tokens[self.tokens_index + 2][1]
+                    # self.tokens_index += 3
                 else:
                     self.write_push(var_id[2], var_id[3])
             elif token in vm_type_dictionary:
@@ -240,14 +243,16 @@ pop pointer 0
                 break
             elif token in arithmetic_set:
                 self.write_arithmetic(token, previous_value)
-            elif next_token == ';' and token.isalnum():
+            elif next_token == ')' or next_token == ';':
                 self._process_string()
-            else:
+            elif (next_token == '(' or next_token == '.'):
                 self._call_function()
                 break
             self.tokens_index += 1
             previous_value = True
             token = self._get_current_token()
+
+
 
     def _process_string(self):
         token = self._get_current_token()
@@ -307,17 +312,43 @@ pop pointer 0
 
     def _write_let(self):
         self.tokens_index += 1
+        if self.tokens_index > 45:
+            print('stop')
         var_name = self._get_current_token()
+        next_token = self.function_tokens[self.tokens_index + 1][1]
+        if next_token == '=':
+            self.tokens_index += 2
+            self._process_expression()
+            self._pop_var_name(var_name)
+        elif next_token == '[':
+            token = self._get_current_token()
+            var_id1 = self._get_id_array(token)
+            self.tokens_index += 2
+            token = self._get_current_token()
+            var_id = self._get_id_array(token)
+            self.write_push(var_id[2], var_id[3])
+            self.write_push(var_id1[2], var_id1[3])
+            self.file.write('add\n')
+            self.tokens_index += 3
+            self._process_expression()
+            self.file.write(f'''pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+''')
+
+        else:
+            token = self._get_current_token()
+            print(f'error {token}')
+
+    def _push_array(self):
+        var_name = self._get_id_array(self._get_current_token())
+        self.tokens_index += 2
+        var_name_ind = self._get_id_array(self._get_current_token())
+        self.write_push(var_name_ind[2], var_name_ind[3])
+        self.write_push(var_name[2], var_name[3])
+        self.file.write(f'''add
+pop pointer 1
+push that 0
+''')
         self.tokens_index += 1
-        self.tokens_index += 1
-        self._process_expression()
-        self._pop_var_name(var_name)
-        # while self.tokens_index < len(self.function_tokens):
-        #     symbol = self._get_current_token()
-        #     if symbol == ';':
-        #         break
-        #     elif symbol == '=':
-        #         self.tokens_index += 1
-        #         self._write_expression()
-        #         break
-        #     self.tokens_index += 1

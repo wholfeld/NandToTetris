@@ -56,6 +56,14 @@ arithmetic_dictionary = {
     '-': 'neg',
 }
 
+vm_type_dictionary = {
+    'this': 'pointer 0',
+    'that': 'pointer 1',
+    'true': 'constant 0',
+    'false': 'constant 0',
+    'null': 'constant 0',
+}
+
 keyword_set = frozenset([
     'class',
     'constructor',

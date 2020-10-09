@@ -1,4 +1,4 @@
-from enum_dictionaries import arithmetic_set, arithmetic_dictionary
+from enum_dictionaries import arithmetic_set, arithmetic_dictionary, vm_type_dictionary
 
 
 class VMWriter:
@@ -63,10 +63,10 @@ class VMWriter:
             self.file.write(f'label IF_FALSE{current_if}\n')
             self._process_function_tokens()
             self.file.write(f'label IF_END{current_if}\n')
+            self.tokens_index += 1
         else:
             self.file.write(f'label IF_FALSE{current_if}\n')
-            self._process_function_tokens()
-        self.tokens_index += 1
+            # self._process_function_tokens()
 
     def write_while(self):
         self.tokens_index += 1
@@ -94,7 +94,7 @@ class VMWriter:
             self.write_comments(f'// writing construction {function_name}')
             self.file.write(f'''function {self.class_name}.{function_name} {local_count}\n''')
             self.file.write(f'''push constant {class_fields_count}
-call Memory alloc 1
+call Memory.alloc 1
 pop pointer 0
 ''')
         elif function_type == 'method':
@@ -134,7 +134,7 @@ pop pointer 0
                 self.write_while()
             elif token == 'do':
                 self.tokens_index += 1
-                self._process_expression()
+                self._call_function()
                 self.file.write(f'pop temp 0\n')
             elif token == '}':
                 break
@@ -142,13 +142,36 @@ pop pointer 0
                 self.tokens_index += 1
 
     def _call_function(self):
-        token = self._get_current_token()
+        push_this = False
         call_name = ''
+        token = self._get_current_token()
+        local_or_pointer = ''
+        var_location = 0
+        if self.symbol_builder.is_var(token):
+            var_id = self._get_id_array(token)
+            # replace the var with the var class
+            call_name = var_id[1]
+            var_location = var_id[3]
+            self.tokens_index += 1
+            token = self._get_current_token()
+            push_this = True
+            if var_id[2] == 'var':
+                local_or_pointer = 'local'
+            # must be field
+            else:
+                local_or_pointer = 'this'
         while token != '(':
             call_name = call_name + token
             self.tokens_index += 1
             token = self._get_current_token()
         parameter_count = self._process_parameters()
+        if '.' not in call_name:
+            call_name = f'{self.class_name}.{call_name}'
+            push_this = True
+            local_or_pointer = 'pointer'
+        if push_this:
+            parameter_count += 1
+            self.file.write(f'push {local_or_pointer} {var_location}\n')
         self.write_call(call_name, parameter_count)
 
     def _process_parameters(self):
@@ -158,33 +181,41 @@ pop pointer 0
             return 0
         closing_count = 1
         parameter_count = 1
+        previous_value = False
         while closing_count > 0:
             token = self._get_current_token()
+            if token == 'this':
+                print('this')
             if token == ')':
                 closing_count -= 1
                 continue
             elif token == '(':
                 closing_count += 1
                 self._process_parameters()
+                previous_value = True
             elif token == ',':
+                previous_value = False
                 parameter_count += 1
             else:
-                self._process_expression()
+                self._process_expression(previous_value)
                 token = self._get_current_token()
+                previous_value = True
                 continue
             self.tokens_index += 1
         return parameter_count
 
-    def _process_expression(self):
+    def _process_expression(self, previous_value=False):
         token = self._get_current_token()
-        previous_value = False
         while token != ';':
+            next_token = self.function_tokens[self.tokens_index + 1][1]
             if token.isnumeric():
                 self.file.write(f'push constant {token}\n')
+            elif token in vm_type_dictionary:
+                # self.file.write(f'push constant 0\n')
+                self.file.write(f'push {vm_type_dictionary[token]}\n')
+                if token == 'true':
+                    self.file.write(f'not\n')
             elif self.symbol_builder.is_var(token):
-                print(token)
-                # self.tokens_index += 1
-                next_token = self.function_tokens[self.tokens_index + 1][1]
                 var_id = self._get_id_array(token)
                 if next_token == '.' or next_token == '(':
                     self._call_function()
@@ -198,8 +229,9 @@ pop pointer 0
                     self.tokens_index += 3
                 else:
                     self.write_push(var_id[2], var_id[3])
-            elif token in ['false', 'true', 'null']:
-                self.file.write(f'push constant 0\n')
+            elif token in vm_type_dictionary:
+                # self.file.write(f'push constant 0\n')
+                self.file.write(f'push {vm_type_dictionary[token]}\n')
                 if token == 'true':
                     self.file.write(f'not\n')
             elif token == '(':
@@ -208,12 +240,22 @@ pop pointer 0
                 break
             elif token in arithmetic_set:
                 self.write_arithmetic(token, previous_value)
+            elif next_token == ';' and token.isalnum():
+                self._process_string()
             else:
                 self._call_function()
                 break
             self.tokens_index += 1
             previous_value = True
             token = self._get_current_token()
+
+    def _process_string(self):
+        token = self._get_current_token()
+        self.write_push('constant', len(token))
+        self.file.write(f'call String.new 1\n')
+        for c in token:
+            self.file.write(f'push constant {ord(c)}\n')
+            self.file.write(f'call String.appendChar 2\n')
 
     def _get_current_token(self):
         return self.function_tokens[self.tokens_index][1]
@@ -226,7 +268,6 @@ pop pointer 0
             self._process_expression()
         else:
             self.file.write(f'push constant 0\n')
-
         self.file.write(f'return\n')
 
     # def _write_expression(self):

@@ -150,6 +150,7 @@ pop pointer 0
         token = self._get_current_token()
         local_or_pointer = ''
         var_location = 0
+        parameter_count = 0
         if self.symbol_builder.is_var(token):
             var_id = self._get_id_array(token)
             # replace the var with the var class
@@ -167,7 +168,7 @@ pop pointer 0
             call_name = call_name + token
             self.tokens_index += 1
             token = self._get_current_token()
-        parameter_count = self._process_parameters()
+        
         if '.' not in call_name:
             call_name = f'{self.class_name}.{call_name}'
             push_this = True
@@ -175,6 +176,7 @@ pop pointer 0
         if push_this:
             parameter_count += 1
             self.file.write(f'push {local_or_pointer} {var_location}\n')
+        parameter_count += self._process_parameters()
         self.write_call(call_name, parameter_count)
 
     def _process_parameters(self):
@@ -187,8 +189,8 @@ pop pointer 0
         previous_value = False
         while closing_count > 0:
             token = self._get_current_token()
-            if token == 'this':
-                print('this')
+            # if token == 'this':
+            #     print('this')
             if token == ')':
                 closing_count -= 1
                 continue
@@ -310,8 +312,6 @@ pop pointer 0
 
     def _write_let(self):
         self.tokens_index += 1
-        if self.tokens_index > 45:
-            print('stop')
         var_name = self._get_current_token()
         next_token = self.function_tokens[self.tokens_index + 1][1]
         if next_token == '=':

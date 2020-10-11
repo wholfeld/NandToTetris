@@ -239,7 +239,7 @@ pop pointer 0
                     self.file.write(f'not\n')
             elif token == '(':
                 self._process_parameters()
-            elif token == ')' or token == ',':
+            elif token == ')' or token == ',' or token == ']':
                 break
             elif token in arithmetic_set:
                 self.write_arithmetic(token, previous_value)
@@ -251,8 +251,6 @@ pop pointer 0
             self.tokens_index += 1
             previous_value = True
             token = self._get_current_token()
-
-
 
     def _process_string(self):
         token = self._get_current_token()
@@ -322,14 +320,12 @@ pop pointer 0
             self._pop_var_name(var_name)
         elif next_token == '[':
             token = self._get_current_token()
-            var_id1 = self._get_id_array(token)
-            self.tokens_index += 2
-            token = self._get_current_token()
             var_id = self._get_id_array(token)
+            self.tokens_index += 1
+            self._process_expression()
             self.write_push(var_id[2], var_id[3])
-            self.write_push(var_id1[2], var_id1[3])
             self.file.write('add\n')
-            self.tokens_index += 3
+            self.tokens_index += 2
             self._process_expression()
             self.file.write(f'''pop temp 0
 pop pointer 1
@@ -343,12 +339,10 @@ pop that 0
 
     def _push_array(self):
         var_name = self._get_id_array(self._get_current_token())
-        self.tokens_index += 2
-        var_name_ind = self._get_id_array(self._get_current_token())
-        self.write_push(var_name_ind[2], var_name_ind[3])
+        self.tokens_index += 1
+        self._process_expression()
         self.write_push(var_name[2], var_name[3])
         self.file.write(f'''add
 pop pointer 1
 push that 0
 ''')
-        self.tokens_index += 1

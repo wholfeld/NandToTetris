@@ -749,13 +749,13 @@
     <symbol> ( </symbol>
     <parameterList>
       <keyword> int </keyword>
-      <identifier> a </identifier>
+      <identifier> a </identifier a, int, argument, 0>
     </parameterList>
     <symbol> ) </symbol>
     <subroutineBody>
       <symbol> { </symbol>
       <keyword> return </keyword>
-      <identifier> a </identifier>
+      <identifier> a </identifier a, int, argument, 0>
       <symbol> * </symbol>
       <integerConstant> 2 </integerConstant>
       <symbol> ; </symbol>
@@ -769,10 +769,10 @@
     <symbol> ( </symbol>
     <parameterList>
       <identifier> Array </identifier>
-      <identifier> a </identifier>
+      <identifier> a </identifier a, Array, argument, 0>
       <symbol> , </symbol>
       <keyword> int </keyword>
-      <identifier> size </identifier>
+      <identifier> size </identifier size, int, argument, 1>
     </parameterList>
     <symbol> ) </symbol>
     <subroutineBody>
@@ -783,7 +783,7 @@
           <symbol> ( </symbol>
           <expression>
             <term>
-              <identifier> size </identifier>
+              <identifier> size </identifier size, int, argument, 1>
             </term>
             <symbol> &gt; </symbol>
             <term>
@@ -795,11 +795,11 @@
           <statements>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> size </identifier>
+              <identifier> size </identifier size, int, argument, 1>
               <symbol> = </symbol>
               <expression>
                 <term>
-                  <identifier> size </identifier>
+                  <identifier> size </identifier size, int, argument, 1>
                 </term>
                 <symbol> - </symbol>
                 <term>
@@ -810,11 +810,11 @@
             </letStatement>
             <letStatement>
               <keyword> let </keyword>
-              <identifier> a </identifier>
+              <identifier> a </identifier a, Array, argument, 0>
               <symbol> [ </symbol>
               <expression>
                 <term>
-                  <identifier> size </identifier>
+                  <identifier> size </identifier size, int, argument, 1>
                 </term>
               </expression>
               <symbol> ] </symbol>

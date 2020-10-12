@@ -38,6 +38,8 @@ class VMWriter:
         next_token = self.function_tokens[self.tokens_index + 1][1]
         if token == '(':
             self._process_parameters()
+        elif next_token == '.':
+            self._call_function()
         elif next_token == '[':
             self._push_array()
         else:
@@ -69,7 +71,6 @@ class VMWriter:
             self.tokens_index += 1
         else:
             self.file.write(f'label IF_FALSE{current_if}\n')
-            # self._process_function_tokens()
 
     def write_while(self):
         self.tokens_index += 1
@@ -189,8 +190,6 @@ pop pointer 0
         previous_value = False
         while closing_count > 0:
             token = self._get_current_token()
-            # if token == 'this':
-            #     print('this')
             if token == ')':
                 closing_count -= 1
                 continue
@@ -225,17 +224,11 @@ pop pointer 0
                 if next_token == '.' or next_token == '(':
                     self._call_function()
                     break
-                # elif next_token == ',' or next_token == ')':
-                #     self.write_push(var_id[2], var_id[3])
-                # Is a var array
                 elif next_token == '[':
                     self._push_array()
-                    # array_index_token = self.function_tokens[self.tokens_index + 2][1]
-                    # self.tokens_index += 3
                 else:
                     self.write_push(var_id[2], var_id[3])
             elif token in vm_type_dictionary:
-                # self.file.write(f'push constant 0\n')
                 self.file.write(f'push {vm_type_dictionary[token]}\n')
                 if token == 'true':
                     self.file.write(f'not\n')
@@ -275,16 +268,6 @@ pop pointer 0
             self.file.write(f'push constant 0\n')
         self.file.write(f'return\n')
 
-    # def _write_expression(self):
-    #     token = self._get_current_token()
-    #     while token != ';':
-    #         if token in arithmetic_set:
-    #             self.write_arithmetic()
-    #         else:
-    #             self._push_var_name(token)
-    #         self.tokens_index += 1
-    #         token = self._get_current_token()
-
     def close(self):
         self.file.close()
 
@@ -293,8 +276,10 @@ pop pointer 0
             self.file.write(f'{comment_str}\n')
 
     def _push_var_name(self, var_name):
-        if var_name == 'this':
-            self.write_push('pointer', '0')
+        if var_name in vm_type_dictionary:
+            self.file.write(f'push {vm_type_dictionary[var_name]}\n')
+            if var_name == 'true':
+                self.file.write(f'not\n')
         elif var_name.isnumeric():
             self.write_push('constant', var_name)
         else:
@@ -321,7 +306,7 @@ pop pointer 0
         elif next_token == '[':
             token = self._get_current_token()
             var_id = self._get_id_array(token)
-            self.tokens_index += 1
+            self.tokens_index += 2
             self._process_expression()
             self.write_push(var_id[2], var_id[3])
             self.file.write('add\n')
@@ -339,7 +324,7 @@ pop that 0
 
     def _push_array(self):
         var_name = self._get_id_array(self._get_current_token())
-        self.tokens_index += 1
+        self.tokens_index += 2
         self._process_expression()
         self.write_push(var_name[2], var_name[3])
         self.file.write(f'''add

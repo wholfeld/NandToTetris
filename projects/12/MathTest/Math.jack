@@ -85,16 +85,16 @@ class Math {
         }
 
         if (x < 0) {
-            if (y > 0) {
-                return -sum;
-            }
+            let pos_val = ~pos_val;
         }
+
         if (y < 0) {
-            if (x > 0) {
-                return -sum;
-            }
+            let pos_val = ~pos_val;
         }
-        return sum;
+        if (pos_val) {
+            return sum;
+        }
+        return -sum;
     }
 
     /** Returns the integer part of x/y.
@@ -103,12 +103,81 @@ class Math {
      *  the Jack expressions x/y and divide(x,y) return the same value.
      */
     function int divide(int x, int y) {
-        return 1;
+        var int q;
+        var int q2;
+        var int posQ;
+        var int myX;
+        var int myY;
+        var int y2;
+        var int xSolve;
+        var int pos_neg;
+        let pos_neg = 1;
+        let myY = Math.abs(y);
+        let myX = Math.abs(x);
+        let y2 = myY + myY;
+        // need to check if y overflowed
+        if (myY > myX) {
+            return 0;
+        }
+        let q = Math.divide(myX, y2);
+
+        if (y2 < 0) {
+            return 0;
+        }
+
+        let q2 = q + q;
+        let xSolve = myX - (q2 * myY);
+        if (x < 0) {
+            let pos_neg = -1;
+        }
+        if (y < 0) {
+            if (pos_neg < 0) {
+                let pos_neg = 1;
+            }
+            else {
+                let pos_neg = -1;
+            }
+        }
+        if (xSolve < myY) {
+            if (pos_neg < 0) {
+                return -q2;
+            }
+            return q2;
+        } else {
+            if (pos_neg < 0) {
+                return -q2 -1;
+            }
+            return q2 + 1;
+        }
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
-        return 1;
+        var int y;
+        var int n;
+        var int j;
+        var int temp;
+        
+        let y = 0;
+        let n = 15;
+        let j = 7;
+        while (j > -1) {
+            let temp = y + shift_array[j];
+            let temp = temp * temp;
+            if (temp > 0) {
+                if (temp > x) {
+                    let j = j - 1;
+                }
+                else {
+                    let y = y + shift_array[j];
+                    let j = j - 1;
+                }
+            } else {
+                let j = j - 1;
+            }
+        }
+
+        return y;
     }
 
     /** Returns the greater number. */

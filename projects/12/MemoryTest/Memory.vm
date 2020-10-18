@@ -1,22 +1,40 @@
 function Memory.init 0
 push constant 0
 pop static 0
+push constant 2048
+pop static 1
+push constant 0
+push static 1
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push static 1
+add
+push constant 16383
+push constant 2048
+sub
+push constant 2
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
 push constant 0
 return
-function Memory.peek 1
-push constant 0
-pop local 0
+function Memory.peek 0
 push argument 0
-push local 0
+push static 0
 add
 pop pointer 1
 push that 0
 return
-function Memory.poke 1
-push constant 0
-pop local 0
+function Memory.poke 0
 push argument 0
-push local 0
+push static 0
 add
 push argument 1
 pop temp 0
@@ -25,8 +43,43 @@ push temp 0
 pop that 0
 push constant 0
 return
-function Memory.alloc 0
-push constant 2048
+function Memory.alloc 1
+push constant 1
+push static 1
+add
+push constant 1
+push static 1
+add
+pop pointer 1
+push that 0
+push argument 0
+sub
+push constant 1
+sub
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push static 1
+push constant 1
+push static 1
+add
+pop pointer 1
+push that 0
+add
+push constant 1
+add
+pop local 0
+push constant 1
+neg
+push local 0
+add
+push argument 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 0
 return
 function Memory.deAlloc 0
 push constant 0

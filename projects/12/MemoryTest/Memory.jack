@@ -35,11 +35,12 @@ class Memory {
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
-        var int rLoc;
-        let heap[1] = heap[1] - size - 1;
-        let rLoc = heap + heap[1] + 1;
-        let rLoc[-1] = size;
-        return rLoc;
+        var int allocLocation;
+        let heap[1] = heap[1] - size - 2;
+        let allocLocation = heap + heap[1] + 1;
+        let allocLocation[-1] = size;
+        let allocLocation[-2] = 0; //next location is null
+        return allocLocation;
     }
 
     /** Finds an available RAM block of the given size and returns

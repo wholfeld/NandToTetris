@@ -1,0 +1,117 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 512 rows (indexed 0..511, top to bottom)
+ * of 256 pixels each (indexed 0..255, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+class Screen {
+
+    static Array bitArray;
+    static int screenStart;
+    static int screenEnd;
+
+    /** Initializes the Screen. */
+    function void init() {
+        let bitArray = Array.new(16);
+        let bitArray[0] = 1; // [1000000000000000]
+        let bitArray[1] = 2;
+        let bitArray[2] = 4;
+        let bitArray[3] = 8;
+        let bitArray[4] = 16;
+        let bitArray[5] = 32;
+        let bitArray[6] = 64;
+        let bitArray[7] = 128;
+        let bitArray[8] = 256;
+        let bitArray[9] = 512;
+        let bitArray[10] = 1024;
+        let bitArray[11] = 2048;
+        let bitArray[12] = 4096;
+        let bitArray[13] = 8192;
+        let bitArray[14] = 16383;
+        let bitArray[15] = -16384; // [0000000000000001]
+        // let bitArray[0] = -16384;
+        // let bitArray[1] = 16383;
+        // let bitArray[2] = 8192;
+        // let bitArray[3] = 4096;
+        // let bitArray[4] = 2048;
+        // let bitArray[5] = 1024;
+        // let bitArray[6] = 512;
+        // let bitArray[7] = 256;
+        // let bitArray[8] = 128;
+        // let bitArray[9] = 64;
+        // let bitArray[10] = 32;
+        // let bitArray[11] = 16;
+        // let bitArray[12] = 8;
+        // let bitArray[13] = 4;
+        // let bitArray[14] = 2;
+        // let bitArray[15] = 1;
+        let screenStart = 16384;
+        let screenEnd = 24575;
+        return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+        var int screenEnd;
+        var int itr;
+        let itr = screenStart;
+        while (itr < screenEnd) {
+            do Memory.poke(itr, 0);
+            let itr = itr + 1;
+        }
+        return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+        return;
+    }
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+        var int xMemColumns;
+        var int memLoc;
+        var int xIndex;
+        var int peepMem;
+        let xMemColumns = x/16;
+        let memLoc = (y * 32) + xMemColumns + 16384;
+        let xIndex = x - (xMemColumns * 16);
+        let peepMem = Memory.peek(memLoc);
+        do Memory.poke(memLoc, peepMem | bitArray[xIndex]);
+        // do Memory.poke(screenStart, bitArray[1]);
+        // do Memory.poke(screenStart + 32, bitArray[1]);
+        // do Memory.poke(screenStart, bitArray[15]);
+        // do Memory.poke(screenStart + 32, bitArray[15]);
+        // do Memory.poke(screenStart + 64, bitArray[15]);
+        // do Memory.poke(screenStart + 64, bitArray[15]);
+        // do Memory.poke(screenStart + 96, bitArray[14]);
+        // do Memory.poke(screenStart + 129, bitArray[15]);
+        // do Memory.poke(screenStart + 128, bitArray[0]);
+        //do Memory.poke(screenStart, bitArray[0]);
+        //do Memory.poke(screenStart + 32, 511);
+        //do Memory.poke(17000, -1);
+        return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+        return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+        return;
+    }
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+        return;
+    }
+}

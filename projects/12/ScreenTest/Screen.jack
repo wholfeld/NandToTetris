@@ -224,19 +224,38 @@ class Screen {
         var int x2Remainder;
         var int curColumn;
         var int memoryLocation;
+        var int memPeek;
+        var int invertbit;
         let x1Column = x1/16;
         let x1Remainder = Screen.getRemainder(x1, 16);
         let x2Column = x2/16;
         let x2Remainder = Screen.getRemainder(x2, 16);
         let curColumn = x1Column + 1;
         let memoryLocation = (y * 32) + x1Column + 16384;
-        do Memory.poke(memoryLocation, maskArray[x1Remainder]);
-        while (curColumn < (x2Column + 1)) {
+        let memPeek = Memory.peek(memoryLocation);
+        if (setBlack) {
+            do Memory.poke(memoryLocation, memPeek | maskArray[x1Remainder]);
+        } else {
+            let invertbit = ~maskArray[x1Remainder];
+            do Memory.poke(memoryLocation, memPeek & invertbit);
+        }
+        while (curColumn < (x2Column)) {
             let curColumn = curColumn + 1;
             let memoryLocation = memoryLocation + 1;
-            do Memory.poke(memoryLocation, -1);
+            if (setBlack) {
+                do Memory.poke(memoryLocation, -1);
+            } else {
+                do Memory.poke(memoryLocation, 0);
+            }
         }
-        do Memory.poke(memoryLocation, maskArrayR[x2Remainder]);
+        let memoryLocation = memoryLocation + 1;
+        let memPeek = Memory.peek(memoryLocation);
+        if (setBlack) {
+            do Memory.poke(memoryLocation, memPeek | maskArrayR[x2Remainder]);
+        } else {
+            let invertbit = ~maskArrayR[x2Remainder];
+            do Memory.poke(memoryLocation, memPeek & invertbit);
+        }
         return;
     }
 

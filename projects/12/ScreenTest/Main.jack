@@ -27,13 +27,17 @@ class Main {
         // do Screen.drawLine(20,100,100,120);        // base line
         //do Screen.drawLine(20,100,100,220);        // base line
         do Screen.drawLine(0,220,511,220);        // base line
+        do Screen.drawLine(4,20,8,20);        // base line
+        //do Screen.drawLine(4,220,8,220);        // base line
         do Screen.drawRectangle(280,90,410,220);  // house
         
-        // do Screen.setColor(false); 
-        // do Screen.drawRectangle(350,120,390,219); // door
-        // do Screen.drawRectangle(292,120,332,150); // window
+        do Screen.setColor(false); 
+        //do Screen.drawLine(350,120,390,219); // door
+        do Screen.drawRectangle(350,120,390,219); // door
+        do Screen.drawRectangle(292,120,332,150); // window
         
-        // do Screen.setColor(true); 
+        do Screen.setColor(true); 
+        do Screen.drawPixel(410, 80);
         // do Screen.drawCircle(360,170,3);          // door handle
         do Screen.drawLine(280,90,345,35);        // roof
         do Screen.drawLine(345,35,410,90);        // roof

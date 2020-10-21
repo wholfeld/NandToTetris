@@ -247,12 +247,27 @@ class Output {
     /** displays the given string starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printString(String s) {
+        var int itr;
+        let itr = 0;
+        while (itr < s.length()) {
+            do Output.printChar(s.charAt(itr));
+            let itr = itr + 1;
+        }
+
         return;
     }
 
     /** Displays the given integer starting at the cursor location,
      *  and advances the cursor appropriately. */
     function void printInt(int i) {
+        var String s;
+        let s =  String.new(6);
+        do s.setInt(i);
+        // if (i < 0) {
+        //     do Output.printChar(45);
+        //     let i = i * -1;
+        // }
+        do Output.printString(s);
         return;
     }
 
@@ -269,6 +284,21 @@ class Output {
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        if ((row > 0) | (column > 0)) {
+            if (column > 0) {
+                let column = column - 1;
+            } else {
+                let row = row - 1;
+                let column = 63;
+            }
+            do Output.printChar(32);
+            if (column > 0) {
+                let column = column - 1;
+            } else {
+                let row = row - 1;
+                let column = 63;
+            }
+        }
         return;
     }
 }

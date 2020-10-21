@@ -37,7 +37,6 @@ class Screen {
         let bitArray[13] = 8192;
         let bitArray[14] = 16384;
         let bitArray[15] = -1 & ~32767;//-32768; // [0000000000000001]
-        //let bitArray[15] = -16384;  // [0000000000000001]
 
         let maskArray = Array.new(16);
         let maskArray[0] = -1;      // [1111111111111111]
@@ -59,7 +58,6 @@ class Screen {
 
 
         let maskArrayR = Array.new(16);
-        //let maskArrayR[0] = 0;    // [0000000000000000]
         let maskArrayR[0] = 1;      // [1000000000000000]
         let maskArrayR[1] = 3;      // [1100000000000000]
         let maskArrayR[2] = 7;      // [1110000000000000]
@@ -76,7 +74,6 @@ class Screen {
         let maskArrayR[13] = 16383; // [1111111111111100]
         let maskArrayR[14] = 32767; // [1111111111111110]
         let maskArrayR[15] = -1; //    [1111111111111111]
-        // let maskArray[15] = 32767;  [1111111111111110]
         let screenStart = 16384;
         let screenEnd = 24575;
         let setBlack = true;
@@ -182,8 +179,6 @@ class Screen {
                 }
             }
         }
-        // do Memory.poke(17002, -32767);
-        // do Memory.poke(17002, -16384);
         return;
     }
 
@@ -208,12 +203,6 @@ class Screen {
             let memoryLocation = memoryLocation + 32;
         }
 
-        //do Memory.poke(memLoc, peepMem | bitArray[xIndex]);
-        //do Memory.poke(17000, -8192);
-        // do Memory.poke(17000, -1);
-        // do Memory.poke(17001, -8192);
-        //do Memory.poke(17002, -16384);
-        // do Memory.poke(17002, -32768);
         return;
     }
 
@@ -239,18 +228,6 @@ class Screen {
             let invertbit = ~maskArray[x1Remainder];
             do Memory.poke(memoryLocation, memPeek & invertbit);
         }
-        // do Output.printString("remainder: ");
-        // do Output.printInt(x1Remainder);
-        // do Output.println();
-        // do Output.printString("Mask Array: ");
-        // do Output.printInt(maskArray[x1Remainder]);
-        // do Output.println();
-        // do Output.printString("Memory location: ");
-        // do Output.printInt(memoryLocation);
-        // do Output.println();
-        // do Output.printString("Memory peek: ");
-        // do Output.printInt(memPeek);
-        // do Output.println();
         while (curColumn < x2Column) {
 
             let curColumn = curColumn + 1;
@@ -263,29 +240,12 @@ class Screen {
         }
         let memoryLocation = (y * 32) + x2Column + 16384;
         let memPeek = Memory.peek(memoryLocation);
-        // do Output.println();
-        // do Output.println();
-        // do Output.printString("x2 Remainder: ");
-        // do Output.printInt(x2Remainder);
-        // do Output.println();
-        // do Output.printString("mask array R: ");
-        // do Output.printInt(maskArrayR[x2Remainder]);
-        // do Output.println();
-        // do Output.printString("memoryLocation: ");
-        // do Output.printInt(memoryLocation);
-        // do Output.println();
-        // do Output.printString("memPeek: ");
-        // do Output.printInt(memPeek);
-        // do Output.println();
         if (setBlack) {
             do Memory.poke(memoryLocation, memPeek & maskArrayR[x2Remainder]);
         } else {
             let invertbit = ~maskArrayR[x2Remainder];
             do Memory.poke(memoryLocation, memPeek & invertbit);
         }
-        // let memPeek = Memory.peek(memoryLocation);
-        // do Output.printString("memPeek: ");
-        // do Output.printInt(memPeek);
         return;
     }
 
@@ -312,8 +272,6 @@ class Screen {
         let dy = 0;
         while (dy < r) {
             let edge = Math.sqrt((r * r) - (dy * dy));
-            // do Output.printInt(edge);
-            // do Output.println();
             do Screen.drawHorizontalLine(x - edge, x + edge, y + dy);
             do Screen.drawHorizontalLine(x - edge, x + edge, y - dy);
             let dy = dy + 1;

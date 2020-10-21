@@ -760,8 +760,6 @@ push constant 16
 call Screen.getRemainder 2
 pop local 3
 push local 0
-push constant 1
-add
 pop local 4
 push argument 2
 push constant 32
@@ -836,8 +834,12 @@ pop temp 0
 label IF_END1
 goto WHILE_EXP0
 label WHILE_END0
-push local 5
-push constant 1
+push argument 2
+push constant 32
+call Math.multiply 2
+push local 2
+add
+push constant 16384
 add
 pop local 5
 push local 5
@@ -854,7 +856,7 @@ push static 2
 add
 pop pointer 1
 push that 0
-or
+and
 call Memory.poke 2
 pop temp 0
 goto IF_END2
@@ -906,6 +908,51 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-function Screen.drawCircle 0
+function Screen.drawCircle 2
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push argument 2
+lt
+not
+if-goto WHILE_END0
+push argument 2
+push argument 2
+call Math.multiply 2
+push local 0
+push local 0
+call Math.multiply 2
+sub
+call Math.sqrt 1
+pop local 1
+push argument 0
+push local 1
+sub
+push argument 0
+push local 1
+add
+push argument 1
+push local 0
+add
+call Screen.drawHorizontalLine 3
+pop temp 0
+push argument 0
+push local 1
+sub
+push argument 0
+push local 1
+add
+push argument 1
+push local 0
+sub
+call Screen.drawHorizontalLine 3
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return

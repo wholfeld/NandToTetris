@@ -230,7 +230,7 @@ class Screen {
         let x1Remainder = Screen.getRemainder(x1, 16);
         let x2Column = x2/16;
         let x2Remainder = Screen.getRemainder(x2, 16);
-        let curColumn = x1Column + 1;
+        let curColumn = x1Column; //+ 1;
         let memoryLocation = (y * 32) + x1Column + 16384;
         let memPeek = Memory.peek(memoryLocation);
         if (setBlack) {
@@ -239,7 +239,20 @@ class Screen {
             let invertbit = ~maskArray[x1Remainder];
             do Memory.poke(memoryLocation, memPeek & invertbit);
         }
-        while (curColumn < (x2Column)) {
+        // do Output.printString("remainder: ");
+        // do Output.printInt(x1Remainder);
+        // do Output.println();
+        // do Output.printString("Mask Array: ");
+        // do Output.printInt(maskArray[x1Remainder]);
+        // do Output.println();
+        // do Output.printString("Memory location: ");
+        // do Output.printInt(memoryLocation);
+        // do Output.println();
+        // do Output.printString("Memory peek: ");
+        // do Output.printInt(memPeek);
+        // do Output.println();
+        while (curColumn < x2Column) {
+
             let curColumn = curColumn + 1;
             let memoryLocation = memoryLocation + 1;
             if (setBlack) {
@@ -248,14 +261,31 @@ class Screen {
                 do Memory.poke(memoryLocation, 0);
             }
         }
-        let memoryLocation = memoryLocation + 1;
+        let memoryLocation = (y * 32) + x2Column + 16384;
         let memPeek = Memory.peek(memoryLocation);
+        // do Output.println();
+        // do Output.println();
+        // do Output.printString("x2 Remainder: ");
+        // do Output.printInt(x2Remainder);
+        // do Output.println();
+        // do Output.printString("mask array R: ");
+        // do Output.printInt(maskArrayR[x2Remainder]);
+        // do Output.println();
+        // do Output.printString("memoryLocation: ");
+        // do Output.printInt(memoryLocation);
+        // do Output.println();
+        // do Output.printString("memPeek: ");
+        // do Output.printInt(memPeek);
+        // do Output.println();
         if (setBlack) {
-            do Memory.poke(memoryLocation, memPeek | maskArrayR[x2Remainder]);
+            do Memory.poke(memoryLocation, memPeek & maskArrayR[x2Remainder]);
         } else {
             let invertbit = ~maskArrayR[x2Remainder];
             do Memory.poke(memoryLocation, memPeek & invertbit);
         }
+        // let memPeek = Memory.peek(memoryLocation);
+        // do Output.printString("memPeek: ");
+        // do Output.printInt(memPeek);
         return;
     }
 
@@ -277,6 +307,17 @@ class Screen {
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
     function void drawCircle(int x, int y, int r) {
+        var int dy;
+        var int edge;
+        let dy = 0;
+        while (dy < r) {
+            let edge = Math.sqrt((r * r) - (dy * dy));
+            // do Output.printInt(edge);
+            // do Output.println();
+            do Screen.drawHorizontalLine(x - edge, x + edge, y + dy);
+            do Screen.drawHorizontalLine(x - edge, x + edge, y - dy);
+            let dy = dy + 1;
+        }
         return;
     }
 }

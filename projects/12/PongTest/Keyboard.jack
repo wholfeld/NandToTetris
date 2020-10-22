@@ -1,0 +1,146 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Keyboard.jack
+
+/**
+ * A library for handling user input from the keyboard.
+ */
+class Keyboard {
+
+    static int keyboardMemory;
+
+    /** Initializes the keyboard. */
+    function void init() {
+        let keyboardMemory = 24576;
+        return;
+    } 
+
+    /**
+     * Returns the character of the currently pressed key on the keyboard;
+     * if no key is currently pressed, returns 0.
+     *
+     * Recognizes all ASCII characters, as well as the following keys:
+     * new line = 128 = String.newline()
+     * backspace = 129 = String.backspace()
+     * left arrow = 130
+     * up arrow = 131
+     * right arrow = 132
+     * down arrow = 133
+     * home = 134
+     * End = 135
+     * page up = 136
+     * page down = 137
+     * insert = 138
+     * delete = 139
+     * ESC = 140
+     * F1 - F12 = 141 - 152
+     */
+    function char keyPressed() {
+        var int keyPressed;
+        let keyPressed = Memory.peek(keyboardMemory);
+        return keyPressed;
+    }
+
+    /**								
+     * Waits until a key is pressed on the keyboard and released,
+     * then echoes the key to the screen, and returns the character 
+     * of the pressed key.
+     */
+    function char readChar() {
+        var int keyPressed;
+
+        while(Keyboard.keyPressed() = 0) {
+
+        }
+        let keyPressed = Keyboard.keyPressed();
+        while(~(Keyboard.keyPressed() = 0)) {
+        }
+        return keyPressed;
+    }
+
+    /**								
+     * Displays the message on the screen, reads from the keyboard the entered
+     * text until a newline character is detected, echoes the text to the screen,
+     * and returns its value. Also handles user backspaces.
+     */
+    function String readLine(String message) {
+        var String s;
+        var char nextChar;
+        var boolean keepReading;
+        let s = String.new(64);
+        let keepReading = true;
+        do Output.printString(message);
+        while (keepReading) {
+            let nextChar = Keyboard.readChar();
+            if (nextChar = 128) {
+                let keepReading = false;
+                do Output.println();
+            } else {
+                if (nextChar = 129) {
+                    do Output.backSpace();
+                    do s.eraseLastChar();
+                } else {
+                    do Output.printChar(nextChar);
+                    do s.appendChar(nextChar);
+                }
+            }
+        }
+        return s;
+    }   
+
+    /**								
+     * Displays the message on the screen, reads from the keyboard the entered
+     * text until a newline character is detected, echoes the text to the screen,
+     * and returns its integer value (until the first non-digit character in the
+     * entered text is detected). Also handles user backspaces. 
+     */
+    function int readInt(String message) {
+        var int intRead;
+        var int curCharacter;
+        var boolean isNegative;
+        var boolean negAllowed;
+        let intRead = 0;
+        let isNegative = false;
+        let negAllowed = true;
+        do Output.printString(message);
+        while(true) {
+            let curCharacter = Keyboard.readChar();
+            //enter
+            if (curCharacter = 128) {
+                do Output.println();
+                if (isNegative) {
+                    let intRead = intRead * -1;
+                }
+                return intRead;
+            }
+            //backspace
+            if (curCharacter = 129) {
+                if ((intRead > 0) | (isNegative)) {
+                    do Output.backSpace();
+                    if (intRead = 0) {
+                        let isNegative = false;
+                    }
+                }
+                if (intRead = 0) {
+                    let negAllowed = true;
+                    let isNegative = false;
+                }
+                let intRead = intRead / 10;
+            }
+            if (curCharacter = 45) {
+                if (negAllowed) {
+                    let isNegative = true;
+                }
+                do Output.printChar(curCharacter);
+            }
+            if ((curCharacter > 47) & (curCharacter < 58)) {
+                let negAllowed = false;
+                do Output.printChar(curCharacter);
+                let intRead = intRead * 10;
+                let intRead = intRead + (curCharacter - 48);
+            }
+        }
+        return 0;
+    }
+}

@@ -28,7 +28,7 @@ return
 function Sys.wait 3
 push constant 0
 pop local 0
-push constant 350
+push constant 80
 pop local 2
 label WHILE_EXP0
 push local 0
